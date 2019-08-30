@@ -1,6 +1,7 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.User;
+import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.repository.UserLevelRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class UserEndpoint {
 
     private UserRepository userDao;
+    private UserLevelRepository levelDao;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao) {
+    public UserEndpoint(UserRepository userDao, UserLevelRepository levelDao) {
         this.userDao = userDao;
+        this.levelDao = levelDao;
     }
 
     @GetMapping(path = "/user/usuario")
@@ -61,6 +64,8 @@ public class UserEndpoint {
 
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> save(@Valid @RequestBody User user){
+        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
+        user.getUserLevel().setId(userLevel.getId());
         userDao.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
