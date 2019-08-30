@@ -41,6 +41,9 @@ public class User {
     @ManyToOne
     private UserLevel userLevel;
 
+    @OneToOne(mappedBy = "user")
+    private Vet vet;
+
     public Long getId() {
         return id;
     }
@@ -127,5 +130,13 @@ public class User {
 
     public void setUserLevel(UserLevel userLevel) {
         this.userLevel = userLevel;
+    }
+
+    public Vet getVet() {
+        return vet;
+    }
+
+    public void setVet(Vet vet) {
+        this.vet = vet;
     }
 }

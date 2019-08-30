@@ -2,6 +2,7 @@ package br.org.catolicasc.surca.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class UserLevel {
@@ -9,12 +10,12 @@ public class UserLevel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
     @NotNull
     @OneToMany(mappedBy = "userLevel")
-    private Short level;
+    private List<User> users;
 
     @NotNull
+    @Column(unique = true)
     private String name;
 
     public Long getId() {
@@ -25,12 +26,12 @@ public class UserLevel {
         this.id = id;
     }
 
-    public Short getLevel() {
-        return level;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setLevel(Short level) {
-        this.level = level;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public String getName() {
