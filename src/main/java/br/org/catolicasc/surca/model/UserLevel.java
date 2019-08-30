@@ -1,6 +1,8 @@
 package br.org.catolicasc.surca.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -12,6 +14,7 @@ public class UserLevel extends Auditable{
     private Long id;
 
     @OneToMany(mappedBy = "userLevel")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<User> users;
 
     @NotNull
