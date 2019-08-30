@@ -59,13 +59,13 @@ public class UserEndpoint {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/veterinario/usuario")
+    @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> save(@Valid @RequestBody User user){
         userDao.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/usuario/{id}")
+    @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         userDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);

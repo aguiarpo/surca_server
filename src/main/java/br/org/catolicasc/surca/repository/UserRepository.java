@@ -1,7 +1,6 @@
 package br.org.catolicasc.surca.repository;
 
 import br.org.catolicasc.surca.model.User;
-import br.org.catolicasc.surca.model.UserLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
