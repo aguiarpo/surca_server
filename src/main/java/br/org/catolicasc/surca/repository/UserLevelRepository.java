@@ -7,4 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface UserLevelRepository extends PagingAndSortingRepository<UserLevel, Long> {
     Page<UserLevel> findByName(Pageable pageable, String name);
+    UserLevel findByName(String name);
 }
