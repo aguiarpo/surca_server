@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Properties;
 
 @Configuration
@@ -15,14 +16,18 @@ import java.util.Properties;
 @PropertySource("classpath:/mail.properties")
 public class EmailConfig {
 
+    private final Environment env;
+
     @Autowired
-    private Environment env;
+    public EmailConfig(Environment env) {
+        this.env = env;
+    }
 
     public JavaMailSender mailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost(env.getProperty("spring.mail.host"));
-        mailSender.setPort(env.getProperty("spring.mail.port", Integer.class));
+        mailSender.setPort(Integer.parseInt(Objects.requireNonNull(env.getProperty("spring.mail.port"))));
         mailSender.setUsername(env.getProperty("spring.mail.username"));
         mailSender.setPassword(env.getProperty("spring.mail.password"));
 
