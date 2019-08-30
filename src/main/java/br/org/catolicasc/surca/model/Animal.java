@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Animal {
+public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

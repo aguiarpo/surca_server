@@ -1,19 +1,14 @@
 package br.org.catolicasc.surca.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 @Entity
-public class User {
+public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,13 +28,6 @@ public class User {
     private String telephone1;
     @Size(max = 15)
     private String telephone2;
-
-    private @CreatedDate LocalDateTime createdDate;
-    private @LastModifiedDate LocalDateTime lastModifiedDate;
-
-    private @CreatedBy String createdBy;
-    private @LastModifiedBy String lastModifiedBy;
-
 
     @ManyToOne
     private UserLevel userLevel;
@@ -93,38 +81,6 @@ public class User {
 
     public void setTelephone2(String telephone2) {
         this.telephone2 = telephone2;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public UserLevel getUserLevel() {
