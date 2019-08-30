@@ -7,7 +7,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.util.Date;
+import java.util.List;
 
+@Entity
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,8 +26,6 @@ public class Animal {
     @NotNull
     private Date birthDate;
     @NotNull
-    private Short age;
-    @NotNull
     private Boolean animalCastrated;
     @NotEmpty
     private String coatColor;
@@ -39,12 +39,27 @@ public class Animal {
     @NotNull
     private Date dateMicrochip;
     private String comments;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private Tutor tutor;
+
     @ManyToOne
     private Vet vetMicrochip;
+
     @ManyToOne
     private Vet castrator;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="animal_vaccines", joinColumns=
+            {@JoinColumn(name="animal_id")}, inverseJoinColumns=
+            {@JoinColumn(name="vaccine_id")})
+    private List<Vaccine> vaccines;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="animal_medications", joinColumns=
+            {@JoinColumn(name="animal_id")}, inverseJoinColumns=
+            {@JoinColumn(name="medications_id")})
+    private List<Medications> medications;
 
     public Long getId() {
         return id;
@@ -84,14 +99,6 @@ public class Animal {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public Short getAge() {
-        return age;
-    }
-
-    public void setAge(Short age) {
-        this.age = age;
     }
 
     public Boolean getAnimalCastrated() {
@@ -164,5 +171,21 @@ public class Animal {
 
     public void setCastrator(Vet castrator) {
         this.castrator = castrator;
+    }
+
+    public List<Vaccine> getVaccines() {
+        return vaccines;
+    }
+
+    public void setVaccines(List<Vaccine> vaccines) {
+        this.vaccines = vaccines;
+    }
+
+    public List<Medications> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(List<Medications> medications) {
+        this.medications = medications;
     }
 }
