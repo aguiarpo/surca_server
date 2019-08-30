@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,7 +29,9 @@ public class User {
     private String password;
 
     @NotNull
+    @Size(max = 15)
     private String telephone1;
+    @Size(max = 15)
     private String telephone2;
 
     private @CreatedDate LocalDateTime createdDate;
