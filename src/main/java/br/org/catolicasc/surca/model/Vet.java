@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +19,8 @@ public class Vet {
     private Long id;
     @Column(unique = true)
     @NotNull
-    private Long crmv;
+    @Size(max = 20)
+    private String crmv;
     @NotEmpty
     private String state;
     @NotEmpty
@@ -50,11 +52,11 @@ public class Vet {
         this.id = id;
     }
 
-    public Long getCrmv() {
+    public String getCrmv() {
         return crmv;
     }
 
-    public void setCrmv(Long crmv) {
+    public void setCrmv(String crmv) {
         this.crmv = crmv;
     }
 
