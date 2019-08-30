@@ -62,6 +62,13 @@ public class UserEndpoint {
     }
 
     @PostMapping(path = "/login/usuario")
+    public ResponseEntity<?> saveLogin(@RequestBody User user){
+        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
+        user.setUserLevel(userLevel);
+        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/admin/usuario")
     public ResponseEntity<?> save(@RequestBody User user){
         UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
         user.setUserLevel(userLevel);
@@ -72,6 +79,13 @@ public class UserEndpoint {
     public ResponseEntity<?> delete(@PathVariable Long id){
         userDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/login/usuario")
+    public ResponseEntity<?> updateLogin(@RequestBody User user){
+        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
+        user.setUserLevel(userLevel);
+        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PutMapping("/admin/usuario")
