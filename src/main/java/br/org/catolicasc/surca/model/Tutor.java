@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,9 +21,11 @@ public class Tutor {
     @Column(unique = true)
     @CPF
     @NotEmpty
+    @Size(min = 15, max = 15)
     private String cpf;
     @Column(unique = true)
     @NotEmpty
+    @Size(max = 10)
     private String rg;
     @NotEmpty
     private String motherName;
@@ -37,11 +40,14 @@ public class Tutor {
     @NotEmpty
     private String city;
     @NotEmpty
+    @Size(max = 9)
     private String cep;
     @NotEmpty
     private String profession;
     @NotNull
+    @Size(max = 15)
     private String telephone1;
+    @Size(max = 15)
     private String telephone2;
 
     private @CreatedDate
