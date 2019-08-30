@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -63,11 +62,10 @@ public class UserEndpoint {
     }
 
     @PostMapping(path = "/login/usuario")
-    public ResponseEntity<?> save(@Valid @RequestBody User user){
+    public ResponseEntity<?> save(@RequestBody User user){
         UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
         user.setUserLevel(userLevel);
-        userDao.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario/{id}")
@@ -77,7 +75,9 @@ public class UserEndpoint {
     }
 
     @PutMapping("/admin/usuario")
-    public ResponseEntity<?> update(@Valid @RequestBody User user){
+    public ResponseEntity<?> update(@RequestBody User user){
+        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
+        user.setUserLevel(userLevel);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
