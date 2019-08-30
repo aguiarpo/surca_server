@@ -65,7 +65,7 @@ public class UserEndpoint {
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> save(@Valid @RequestBody User user){
         UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
-        user.getUserLevel().setId(userLevel.getId());
+        user.setUserLevel(userLevel);
         userDao.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
