@@ -75,6 +75,12 @@ public class UserEndpoint {
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/login/usuario/{id}")
+    public ResponseEntity<?> deleteLogin(@PathVariable Long id){
+        userDao.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         userDao.deleteById(id);
