@@ -38,6 +38,7 @@ public class Animal {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @NotNull
     private Date dateMicrochip;
+    @Column(columnDefinition = "TEXT")
     private String comments;
 
     @ManyToOne(cascade = CascadeType.ALL)
