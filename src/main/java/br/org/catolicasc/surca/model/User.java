@@ -30,6 +30,7 @@ public class User extends Auditable{
     private String telephone2;
 
     @ManyToOne
+    @NotNull
     private UserLevel userLevel;
 
     @OneToOne(mappedBy = "user")
