@@ -53,8 +53,8 @@ public class UserLevelEnpoint {
 
     @DeleteMapping(path = "/admin/nivelUsuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
-//        vetDao.removeByUserUserLevelId(id);
-//        userDao.removeByUserLevelId(id);
+        vetDao.removeByUserUserLevelId(id);
+        userDao.removeByUserLevelId(id);
         levelDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
