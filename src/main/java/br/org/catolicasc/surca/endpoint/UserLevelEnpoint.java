@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -47,7 +46,7 @@ public class UserLevelEnpoint {
     }
 
     @PostMapping(path = "/admin/nivelUsuario")
-    public ResponseEntity<?> save(@Valid @RequestBody UserLevel userLevelModel){
+    public ResponseEntity<?> save(@RequestBody UserLevel userLevelModel){
         return new ResponseEntity<>( levelDao.save(userLevelModel), HttpStatus.OK);
     }
 
@@ -61,7 +60,7 @@ public class UserLevelEnpoint {
 
 
     @PutMapping(path = "/admin/nivelUsuario")
-    public ResponseEntity<?> update(@Valid @RequestBody UserLevel userLevelModel){
+    public ResponseEntity<?> update(@RequestBody UserLevel userLevelModel){
         return new ResponseEntity<>(levelDao.save(userLevelModel), HttpStatus.OK);
     }
 }
