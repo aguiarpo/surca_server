@@ -5,7 +5,6 @@ import br.org.catolicasc.surca.email.Mailer;
 import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.UserLevelRepository;
-import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
