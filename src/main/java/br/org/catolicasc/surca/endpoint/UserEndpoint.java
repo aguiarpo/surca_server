@@ -2,6 +2,7 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.model.UserLevel;
+import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.UserLevelRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
@@ -86,7 +87,11 @@ public class UserEndpoint {
 
     @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
-        userDao.deleteById(id);
+        Vet vet = vetDao.findByUserId(id);
+        if(vet == null)
+            userDao.deleteById(id);
+        else
+            vetDao.deleteById(vet.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
