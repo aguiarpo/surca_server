@@ -37,32 +37,44 @@ public class UserEndpoint {
 
     @GetMapping(path = "/user/usuario/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id){
-        Optional<User> user =  userDao.findById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        Optional<User> users =  userDao.findById(id);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/nome/{nome}")
     public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable){
-        Page<User> user = userDao.findByName(pageable, name);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        Page<User> users= userDao.findByName(pageable, name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/nome/like/{nome}")
     public ResponseEntity<?> getUserNameLike(@PathVariable("nome") String name, Pageable pageable){
-        Page<User> user = userDao.findByNameStartingWith(pageable, name);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        Page<User> users = userDao.findByNameStartingWith(pageable, name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/email/{email}")
     public ResponseEntity<?> getUserEmail(@PathVariable("email") String email, Pageable pageable){
-        Page<User> user = userDao.findByEmail(pageable, email);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        Page<User> users = userDao.findByEmail(pageable, email);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/idNivel/{idNivel}")
     public ResponseEntity<?> getUserIdNivel(@PathVariable("idNivel") String name, Pageable pageable){
-        Page<User> user = userDao.findByUserLevelName(pageable, name);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        Page<User> users = userDao.findByUserLevelName(pageable, name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/criadoPor/{createdBy}")
+    public ResponseEntity<?> getUserCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<User> users =  userDao.findByCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getUserLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<User> users =  userDao.findByLastModifiedByStartingWith(pageable, name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/usuario")
