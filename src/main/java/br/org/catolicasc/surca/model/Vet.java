@@ -16,11 +16,8 @@ public class Vet extends Auditable{
     @NotNull
     @Size(max = 20)
     private String crmv;
-    @NotEmpty
-    private String state;
-    @NotEmpty
-    private String city;
     @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private User user;
 
     @OneToMany(mappedBy = "vetMicrochip")
@@ -43,22 +40,6 @@ public class Vet extends Auditable{
 
     public void setCrmv(String crmv) {
         this.crmv = crmv;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public User getUser() {
