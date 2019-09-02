@@ -89,7 +89,7 @@ public class UserEndpoint {
 
     @PutMapping("/login/usuario")
     public ResponseEntity<?> updateLogin(@RequestBody User user){
-        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
+        UserLevel userLevel = levelDao.findByName("Pesquisador");
         user.setUserLevel(userLevel);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
