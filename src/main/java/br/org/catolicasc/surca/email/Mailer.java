@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Mailer  {
 
     private JavaMailSender javaMailSender;
@@ -14,13 +16,12 @@ public class Mailer  {
         this.javaMailSender = javaMailSender;
     }
 
-
     public void submit(EmailMessage emailMessage) throws MailException {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         simpleMailMessage.setFrom(emailMessage.getSender());
         simpleMailMessage.setTo(emailMessage.getRecipients()
-                .toArray(new String[emailMessage.getRecipients().size()]));
+                .toArray(new String[0]));
         simpleMailMessage.setSubject(emailMessage.getSubject());
         simpleMailMessage.setText(emailMessage.getBody());
 
