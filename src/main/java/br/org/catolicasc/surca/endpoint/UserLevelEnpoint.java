@@ -39,6 +39,18 @@ public class UserLevelEnpoint {
         return new ResponseEntity<>(levelUser, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/admin/nivelUsuario/criadoPor/{createdBy}")
+    public ResponseEntity<?> getUserLevelCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<UserLevel> levelUser =  levelDao.findByCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(levelUser, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/nivelUsuario/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getUserLevelLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<UserLevel> levelUser =  levelDao.findByLastModifiedByStartingWith(pageable, name);
+        return new ResponseEntity<>(levelUser, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/admin/nivelUsuario/nivel/{name}")
     public ResponseEntity<?> getNivelUsuarioById(@PathVariable("name") String name, Pageable pageable){
         Page<UserLevel> levelUser = levelDao.findByName(pageable, name);
