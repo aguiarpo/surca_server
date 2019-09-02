@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-public class Vet extends Auditable{
+public class Vet{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
