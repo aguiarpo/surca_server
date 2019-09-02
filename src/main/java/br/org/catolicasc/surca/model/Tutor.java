@@ -16,7 +16,7 @@ public class Tutor extends Auditable{
     @Column(unique = true)
     @CPF
     @NotEmpty
-    @Size(min = 15, max = 15)
+    @Size(min = 14, max = 14)
     private String cpf;
     @Column(unique = true)
     @NotEmpty
@@ -34,6 +34,9 @@ public class Tutor extends Auditable{
     private String complement;
     @NotEmpty
     private String city;
+    @Size(min = 2, max = 2)
+    @NotEmpty
+    private String state;
     @NotEmpty
     @Size(max = 9)
     private String cep;
@@ -166,5 +169,13 @@ public class Tutor extends Auditable{
 
     public void setAnimals(List<Animal> animals) {
         this.animals = animals;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
