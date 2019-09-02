@@ -89,6 +89,8 @@ public class VetEndpoint {
     public ResponseEntity<?> update(@RequestBody Vet vet){
         UserLevel userLevel = levelDao.findByName(vet.getUser().getUserLevel().getName());
         vet.getUser().setUserLevel(userLevel);
+        Vet vetCrmv = vetDao.findByCrmv(vet.getCrmv());
+        vet.getUser().setId(vetCrmv.getUser().getId());
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
     }
 
