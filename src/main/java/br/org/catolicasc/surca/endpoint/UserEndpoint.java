@@ -37,8 +37,8 @@ public class UserEndpoint {
 
     @GetMapping(path = "/user/usuario/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id){
-        Optional<User> users =  userDao.findById(id);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        Optional<User> user =  userDao.findById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/nome/{nome}")
