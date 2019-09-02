@@ -25,17 +25,11 @@ public class User extends Auditable{
     @NotEmpty
     private String password;
 
-    @NotEmpty
-    private String state;
-    @NotEmpty
-    private String city;
-
     @NotNull
     @Size(max = 15)
     private String telephone1;
     @Size(max = 15)
     private String telephone2;
-
 
     @ManyToOne
     @NotNull
@@ -106,21 +100,5 @@ public class User extends Auditable{
 
     public void setVet(Vet vet) {
         this.vet = vet;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 }
