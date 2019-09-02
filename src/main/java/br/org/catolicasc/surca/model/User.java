@@ -25,6 +25,7 @@ public class User extends Auditable{
     @NotEmpty
     private String password;
 
+    @Size(min = 2, max = 2)
     @NotEmpty
     private String state;
     @NotEmpty
