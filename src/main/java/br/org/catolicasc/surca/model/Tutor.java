@@ -1,5 +1,6 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -49,6 +50,7 @@ public class Tutor extends Auditable{
     private String telephone2;
 
     @OneToMany(mappedBy = "tutor")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animals;
 
     public Long getId() {
