@@ -1,6 +1,8 @@
 package br.org.catolicasc.surca.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,9 +22,11 @@ public class Vet{
     private User user;
 
     @OneToMany(mappedBy = "vetMicrochip")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animalsMicrochip;
 
     @OneToMany(mappedBy = "castrator")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animalsCastrator;
 
     public Long getId() {
