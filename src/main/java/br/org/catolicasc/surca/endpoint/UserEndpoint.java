@@ -4,6 +4,7 @@ import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.repository.UserLevelRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
+import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +20,13 @@ public class UserEndpoint {
 
     private UserRepository userDao;
     private UserLevelRepository levelDao;
+    private VetRepository vetDao;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao, UserLevelRepository levelDao) {
+    public UserEndpoint(UserRepository userDao, UserLevelRepository levelDao, VetRepository vetDao) {
         this.userDao = userDao;
         this.levelDao = levelDao;
+        this.vetDao = vetDao;
     }
 
     @GetMapping(path = "/user/usuario")
