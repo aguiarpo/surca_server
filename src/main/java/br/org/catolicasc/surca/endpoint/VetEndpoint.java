@@ -71,7 +71,7 @@ public class VetEndpoint {
 
     @PostMapping(path = "/admin/veterinario")
     public ResponseEntity<?> save(@RequestBody Vet vet){
-        UserLevel userLevel = levelDao.findByName(vet.getUser().getUserLevel().getName());
+        UserLevel userLevel = levelDao.findByName("Veterinário");
         vet.getUser().setUserLevel(userLevel);
         String password = generatePassword();
         ArrayList<String> recipients = new ArrayList<>();
@@ -89,7 +89,7 @@ public class VetEndpoint {
 
     @PutMapping(path = "/admin/veterinario")
     public ResponseEntity<?> update(@RequestBody Vet vet){
-        UserLevel userLevel = levelDao.findByName(vet.getUser().getUserLevel().getName());
+        UserLevel userLevel = levelDao.findByName("Veterinário");
         vet.getUser().setUserLevel(userLevel);
         Vet vetCrmv = vetDao.findByCrmv(vet.getCrmv());
         vet.getUser().setId(vetCrmv.getUser().getId());
