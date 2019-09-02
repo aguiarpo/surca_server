@@ -22,6 +22,7 @@ public class User extends Auditable{
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 8)
     @NotEmpty
     private String password;
 
