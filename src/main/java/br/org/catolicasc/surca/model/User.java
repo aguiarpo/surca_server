@@ -44,6 +44,7 @@ public class User extends Auditable{
     private UserLevel userLevel;
 
     @OneToOne(mappedBy = "user")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Vet vet;
 
     public Long getId() {
