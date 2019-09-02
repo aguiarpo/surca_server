@@ -40,8 +40,8 @@ public class UserLevelEnpoint {
         return new ResponseEntity<>(levelUser, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin/nivelUsuario/nivel/{nivel}")
-    public ResponseEntity<?> getNivelUsuarioById(@PathVariable("nivel") String name, Pageable pageable){
+    @GetMapping(path = "/admin/nivelUsuario/nivel/{name}")
+    public ResponseEntity<?> getNivelUsuarioById(@PathVariable("name") String name, Pageable pageable){
         Page<UserLevel> levelUser = levelDao.findByName(pageable, name);
         return new ResponseEntity<>(levelUser, HttpStatus.OK);
     }
