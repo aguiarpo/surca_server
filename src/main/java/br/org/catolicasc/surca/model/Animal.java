@@ -1,12 +1,10 @@
 package br.org.catolicasc.surca.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -20,11 +18,9 @@ public class Animal extends Auditable{
     private String name;
     @NotEmpty
     private String species;
-    @Temporal(TemporalType.DATE)
     @Past
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @NotNull
-    private Date birthDate;
+    private LocalDate birthDate;
     @NotNull
     private Boolean animalCastrated;
     @NotEmpty
@@ -33,15 +29,13 @@ public class Animal extends Auditable{
     private String breed;
     @NotNull
     private Short sizeCm;
-    @Temporal(TemporalType.DATE)
     @Past
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @NotNull
-    private Date dateMicrochip;
+    private LocalDate dateMicrochip;
     @Column(columnDefinition = "TEXT")
     private String comments;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Tutor tutor;
 
     @ManyToOne
@@ -94,14 +88,6 @@ public class Animal extends Auditable{
         this.species = species;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
     public Boolean getAnimalCastrated() {
         return animalCastrated;
     }
@@ -132,14 +118,6 @@ public class Animal extends Auditable{
 
     public void setSizeCm(Short sizeCm) {
         this.sizeCm = sizeCm;
-    }
-
-    public Date getDateMicrochip() {
-        return dateMicrochip;
-    }
-
-    public void setDateMicrochip(Date dateMicrochip) {
-        this.dateMicrochip = dateMicrochip;
     }
 
     public String getComments() {
@@ -188,5 +166,21 @@ public class Animal extends Auditable{
 
     public void setMedications(List<Medications> medications) {
         this.medications = medications;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public LocalDate getDateMicrochip() {
+        return dateMicrochip;
+    }
+
+    public void setDateMicrochip(LocalDate dateMicrochip) {
+        this.dateMicrochip = dateMicrochip;
     }
 }
