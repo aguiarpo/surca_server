@@ -5,9 +5,11 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "vaccine_seq", sequenceName = "vaccine_seq",
+        initialValue = 2, allocationSize = 1)
 public class Vaccine extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccine_seq")
     private Long id;
     @Column(unique = true)
     @NotEmpty

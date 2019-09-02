@@ -8,9 +8,11 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "user_level_seq", sequenceName = "user_level_seq",
+        initialValue = 2, allocationSize = 1)
 public class UserLevel extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_level_seq")
     private Long id;
 
     @OneToMany(mappedBy = "userLevel")

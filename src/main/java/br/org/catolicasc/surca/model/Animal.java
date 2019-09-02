@@ -8,9 +8,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "animal_seq", sequenceName = "animal_seq",
+        initialValue = 2, allocationSize = 1)
 public class Animal extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
     private Long id;
     @NotNull
     private Integer microchipNumber;

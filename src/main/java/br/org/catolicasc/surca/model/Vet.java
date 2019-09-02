@@ -9,9 +9,11 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "vet_seq", sequenceName = "vet_seq",
+        initialValue = 2, allocationSize = 1)
 public class Vet{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vet_seq")
     private Long id;
     @Column(unique = true)
     @NotNull

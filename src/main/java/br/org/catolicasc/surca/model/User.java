@@ -9,9 +9,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@SequenceGenerator(name = "user_seq", sequenceName = "user_seq",
+        initialValue = 2, allocationSize = 1)
 public class User extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
     @NotNull

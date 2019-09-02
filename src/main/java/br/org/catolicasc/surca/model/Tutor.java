@@ -10,9 +10,11 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "tutor_seq", sequenceName = "tutor_seq",
+        initialValue = 2, allocationSize = 1)
 public class Tutor extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tutor_seq")
     private Long id;
     @Column(unique = true)
     @CPF
