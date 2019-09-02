@@ -2,6 +2,7 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.email.EmailMessage;
 import br.org.catolicasc.surca.email.Mailer;
+import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.UserLevelRepository;
@@ -47,26 +48,38 @@ public class VetEndpoint {
 
     @GetMapping(path = "/admin/veterinario/nome/{nome}")
     public ResponseEntity<?> getVeterinarioName(@PathVariable("nome") String name, Pageable pageable){
-        Page<Vet> vet = vetDao.findByUserName(pageable, name);
-        return new ResponseEntity<>(vet, HttpStatus.OK);
+        Page<Vet> vets = vetDao.findByUserName(pageable, name);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/veterinario//crmv/{crmv}")
     public ResponseEntity<?> getVeterinarioCrmv(@PathVariable("crmv") String crmv, Pageable pageable){
-        Page<Vet> vet = vetDao.findByCrmv(pageable, crmv);
-        return new ResponseEntity<>(vet, HttpStatus.OK);
+        Page<Vet> vets = vetDao.findByCrmv(pageable, crmv);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/veterinario/nome/like/{nome}")
     public ResponseEntity<?> getVeterinarioNameLike(@PathVariable("nome") String name, Pageable pageable){
-        Page<Vet> vet = vetDao.findByUserNameStartingWith(pageable, name);
-        return new ResponseEntity<>(vet, HttpStatus.OK);
+        Page<Vet> vets = vetDao.findByUserNameStartingWith(pageable, name);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/veterinario/email/{email}")
     public ResponseEntity<?> getVeterinarioEmail(@PathVariable("email") String email, Pageable pageable){
-        Page<Vet> vet = vetDao.findByUserEmail(pageable, email);
-        return new ResponseEntity<>(vet, HttpStatus.OK);
+        Page<Vet> vets = vetDao.findByUserEmail(pageable, email);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/veterinario/criadoPor/{createdBy}")
+    public ResponseEntity<?> getCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<Vet> vets =  vetDao.findByUserCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/veterinario/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<Vet> vets =  vetDao.findByUserLastModifiedByStartingWith(pageable, name);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/veterinario")
