@@ -2,6 +2,7 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Tutor;
+import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,6 +62,18 @@ public class TutorEndpoint {
     @GetMapping(path = "/user/tutor/cidade/{city}")
     public ResponseEntity<?> getTutorByCity(@PathVariable("city")String city, Pageable pageable){
         Page<Tutor> tutors =  tutorDao.findByCity(pageable, city);
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/veterinario/tutor/criadoPor/{createdBy}")
+    public ResponseEntity<?> getTutorCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<Tutor> tutors =  tutorDao.findByCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/veterinario/tutor/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getTutorLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<Tutor> tutors =  tutorDao.findByLastModifiedByStartingWith(pageable, name);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
