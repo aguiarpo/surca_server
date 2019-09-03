@@ -1,5 +1,7 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -14,6 +16,7 @@ public class Vaccine extends Auditable{
     private String name;
 
     @ManyToMany(mappedBy="vaccines")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animals;
 
     public Long getId() {
