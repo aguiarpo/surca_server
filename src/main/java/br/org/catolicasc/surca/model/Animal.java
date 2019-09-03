@@ -46,13 +46,13 @@ public class Animal extends Auditable{
     @ManyToOne
     private Vet castrator;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name="animal_vaccines", joinColumns=
             {@JoinColumn(name="animal_id")}, inverseJoinColumns=
             {@JoinColumn(name="vaccine_id")})
     private List<Vaccine> vaccines;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name="animal_medications", joinColumns=
             {@JoinColumn(name="animal_id")}, inverseJoinColumns=
             {@JoinColumn(name="medications_id")})
