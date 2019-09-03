@@ -18,7 +18,7 @@ public class Vet{
     @Size(max = 20)
     private String crmv;
     @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @NotNull
     private User user;
 
     @OneToMany(mappedBy = "vetMicrochip")
