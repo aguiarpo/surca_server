@@ -2,8 +2,10 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.Tutor;
+import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
+import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +21,13 @@ public class AnimalEndpoint {
 
     private AnimalRepository animalDao;
     private TutorRepository tutorDao;
+    private VetRepository vetDao;
 
     @Autowired
-    public AnimalEndpoint(AnimalRepository animalDao, TutorRepository tutorDao) {
+    public AnimalEndpoint(AnimalRepository animalDao, TutorRepository tutorDao, VetRepository vetDao) {
         this.animalDao = animalDao;
         this.tutorDao = tutorDao;
+        this.vetDao = vetDao;
     }
 
     @GetMapping(path = "/user/animal")
@@ -106,6 +110,8 @@ public class AnimalEndpoint {
     @PostMapping(path = "/veterinario/animal")
     public ResponseEntity<?> save(@RequestBody Animal animal){
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
+        animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
+        animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
         if(tutor == null){
             tutor = tutorDao.save(animal.getTutor());
             animal.setTutor(tutor);
@@ -128,9 +134,14 @@ public class AnimalEndpoint {
 
     @PutMapping(path = "/veterinario/animal")
     public ResponseEntity<?> update(@RequestBody Animal animal){
+        animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
+        animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
         animal.getTutor().setId(tutor.getId());
         return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
     }
 
+    private Vet findByCrmv(String crmv){
+        return vetDao.findByCrmv(crmv);
+    }
 }
