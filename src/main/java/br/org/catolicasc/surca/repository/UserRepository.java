@@ -12,5 +12,6 @@ public interface UserRepository extends AuditableRepository<User, Long> {
     Page<User> findByName(Pageable pageable, String name);
     Page<User> findByNameStartingWith(Pageable pageable, String name);
     Page<User> findByEmail(Pageable pageable, String name);
+    User findByEmail(String name);
     Page<User> findByUserLevelName(Pageable pageable, String name);
 }
