@@ -87,11 +87,12 @@ public class VetEndpoint {
         UserLevel userLevel = levelDao.findByName("Veterinário");
         vet.getUser().setUserLevel(userLevel);
         String password = generatePassword();
+        vet.getUser().setPassword(password);
+        Vet vetSave = vetDao.save(vet);
         ArrayList<String> recipients = new ArrayList<>();
         recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
         sendEmail(recipients, password);
-        vet.getUser().setPassword(password);
-        return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
+        return new ResponseEntity<>(vetSave, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/veterinario/{id}")
