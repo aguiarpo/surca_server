@@ -114,9 +114,9 @@ public class UserEndpoint {
     @DeleteMapping(path = "/login/usuario/{email}/{senha}")
     public ResponseEntity<?> deleteLogin(@PathVariable("email") String email,
                                          @PathVariable("senha") String password){
-        String bcryptPassword = userDao.findByEmailWithReturnPassword(email);
-        if(BCrypt.checkpw(password, bcryptPassword)){
-            userDao.deleteByEmailAndPassword(email, bcryptPassword);
+        User user = userDao.findByEmailWithReturnPassword(email);
+        if(BCrypt.checkpw(password, user.getPassword())){
+            userDao.deleteByEmailAndPassword(email, user.getPassword());
         }
         return new ResponseEntity<>(userDao.findByEmail(email), HttpStatus.OK);
     }
