@@ -2,7 +2,6 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Tutor;
-import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

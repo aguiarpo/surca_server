@@ -2,10 +2,8 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.email.EmailMessage;
 import br.org.catolicasc.surca.email.Mailer;
-import br.org.catolicasc.surca.model.User;
-import br.org.catolicasc.surca.model.UserLevel;
+import br.org.catolicasc.surca.model.LevelsOfAccess;
 import br.org.catolicasc.surca.model.Vet;
-import br.org.catolicasc.surca.repository.UserLevelRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,13 +22,11 @@ import java.util.Random;
 public class VetEndpoint {
 
     private VetRepository vetDao;
-    private UserLevelRepository levelDao;
     private Mailer mailer;
 
     @Autowired
-    public VetEndpoint(VetRepository vetDao, UserLevelRepository levelDao, Mailer mailer) {
+    public VetEndpoint(VetRepository vetDao, Mailer mailer) {
         this.vetDao = vetDao;
-        this.levelDao = levelDao;
         this.mailer = mailer;
     }
 
@@ -84,8 +80,7 @@ public class VetEndpoint {
 
     @PostMapping(path = "/admin/veterinario")
     public ResponseEntity<?> save(@RequestBody Vet vet){
-        UserLevel userLevel = levelDao.findByName("Veterinário");
-        vet.getUser().setUserLevel(userLevel);
+        vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         String password = generatePassword();
         vet.getUser().setPassword(password);
         Vet vetSave = vetDao.save(vet);
@@ -103,8 +98,7 @@ public class VetEndpoint {
 
     @PutMapping(path = "/admin/veterinario")
     public ResponseEntity<?> update(@RequestBody Vet vet){
-        UserLevel userLevel = levelDao.findByName("Veterinário");
-        vet.getUser().setUserLevel(userLevel);
+        vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         Vet vetCrmv = vetDao.findByCrmv(vet.getCrmv());
         vet.getUser().setId(vetCrmv.getUser().getId());
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);

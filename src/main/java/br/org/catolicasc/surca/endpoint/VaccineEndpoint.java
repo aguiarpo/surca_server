@@ -1,6 +1,5 @@
 package br.org.catolicasc.surca.endpoint;
 
-import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.model.Vaccine;
 import br.org.catolicasc.surca.repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,8 @@
 package br.org.catolicasc.surca.endpoint;
 
+import br.org.catolicasc.surca.model.LevelsOfAccess;
 import br.org.catolicasc.surca.model.User;
-import br.org.catolicasc.surca.model.UserLevel;
 import br.org.catolicasc.surca.model.Vet;
-import br.org.catolicasc.surca.repository.UserLevelRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,11 @@ import java.util.Optional;
 public class UserEndpoint {
 
     private UserRepository userDao;
-    private UserLevelRepository levelDao;
     private VetRepository vetDao;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao, UserLevelRepository levelDao, VetRepository vetDao) {
+    public UserEndpoint(UserRepository userDao, VetRepository vetDao) {
         this.userDao = userDao;
-        this.levelDao = levelDao;
         this.vetDao = vetDao;
     }
 
@@ -79,15 +76,13 @@ public class UserEndpoint {
 
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
-        UserLevel userLevel = levelDao.findByName("Pesquisador");
-        user.setUserLevel(userLevel);
+        user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/usuario")
     public ResponseEntity<?> save(@RequestBody User user){
-        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
-        user.setUserLevel(userLevel);
+        user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
@@ -109,15 +104,13 @@ public class UserEndpoint {
 
     @PutMapping("/login/usuario")
     public ResponseEntity<?> updateLogin(@RequestBody User user){
-        UserLevel userLevel = levelDao.findByName("Pesquisador");
-        user.setUserLevel(userLevel);
+        user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PutMapping("/admin/usuario")
     public ResponseEntity<?> update(@RequestBody User user){
-        UserLevel userLevel = levelDao.findByName(user.getUserLevel().getName());
-        user.setUserLevel(userLevel);
+        user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
