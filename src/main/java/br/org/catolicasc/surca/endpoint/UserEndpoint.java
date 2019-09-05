@@ -56,11 +56,31 @@ public class UserEndpoint {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-//    @GetMapping(path = "/user/usuario/idNivel/{idNivel}")
-//    public ResponseEntity<?> getUserIdNivel(@PathVariable("idNivel") String name, Pageable pageable){
-//        //Page<User> users = userDao.findByLevelsOfAccess(pageable, name);
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
+    @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")
+    public ResponseEntity<?> getUserIdNivel(@PathVariable("levelsOfAccessString") String levelsOfAccessString, Pageable pageable){
+        levelsOfAccessString = levelsOfAccessString.toUpperCase();
+        Page<User> users = null;
+        switch (levelsOfAccessString) {
+            case "U":
+            case "USUÁRIO":
+            case "USUARIO":
+            case "USER":
+                users = userDao.findByLevelsOfAccess(LevelsOfAccess.USUARIO, pageable);
+                break;
+            case "V":
+            case "VETERINARIO":
+            case "VETERINÁRIO":
+            case "VET":
+                users = userDao.findByLevelsOfAccess(LevelsOfAccess.VETERINARIO, pageable);
+                break;
+            case "A":
+            case "ADMINISTRADOR":
+            case "ADMIN":
+                users = userDao.findByLevelsOfAccess(LevelsOfAccess.ADMIN, pageable);
+                break;
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 
     @GetMapping(path = "/admin/usuario/criadoPor/{createdBy}")
     public ResponseEntity<?> getUserCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
