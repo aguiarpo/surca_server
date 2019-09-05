@@ -56,11 +56,11 @@ public class UserEndpoint {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/idNivel/{idNivel}")
-    public ResponseEntity<?> getUserIdNivel(@PathVariable("idNivel") String name, Pageable pageable){
-        Page<User> users = userDao.findByUserLevelName(pageable, name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
+//    @GetMapping(path = "/user/usuario/idNivel/{idNivel}")
+//    public ResponseEntity<?> getUserIdNivel(@PathVariable("idNivel") String name, Pageable pageable){
+//        //Page<User> users = userDao.findByLevelsOfAccess(pageable, name);
+//        return new ResponseEntity<>(users, HttpStatus.OK);
+//    }
 
     @GetMapping(path = "/admin/usuario/criadoPor/{createdBy}")
     public ResponseEntity<?> getUserCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
