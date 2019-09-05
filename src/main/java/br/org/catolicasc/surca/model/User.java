@@ -40,10 +40,9 @@ public class User extends Auditable{
     @Size(max = 15)
     private String telephone2;
 
-
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private UserLevel userLevel;
+    private LevelsOfAccess levelsOfAccess;
 
     @OneToOne(mappedBy = "user")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -97,12 +96,12 @@ public class User extends Auditable{
         this.telephone2 = telephone2;
     }
 
-    public UserLevel getUserLevel() {
-        return userLevel;
+    public LevelsOfAccess getLevelsOfAccess() {
+        return levelsOfAccess;
     }
 
-    public void setUserLevel(UserLevel userLevel) {
-        this.userLevel = userLevel;
+    public void setLevelsOfAccess(LevelsOfAccess levelsOfAccess) {
+        this.levelsOfAccess = levelsOfAccess;
     }
 
     public Vet getVet() {
