@@ -8,8 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import javax.transaction.Transactional;
 
 public interface VetRepository extends PagingAndSortingRepository<Vet, Long> {
-    @Transactional
-    void removeByUserUserLevelId(Long id);
     Page<Vet> findByUserName(Pageable pageable, String name);
     Page<Vet> findByCrmv(Pageable pageable, String crmv);
     Vet findByCrmv(String crmv);
