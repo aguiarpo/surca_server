@@ -59,7 +59,7 @@ public class UserEndpoint {
     @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")
     public ResponseEntity<?> getUserIdNivel(@PathVariable("levelsOfAccessString") String levelsOfAccessString, Pageable pageable){
         levelsOfAccessString = levelsOfAccessString.toUpperCase();
-        Page<User> users = null;
+        Page<User> users;
         switch (levelsOfAccessString) {
             case "U":
             case "USUÁRIO":
@@ -78,6 +78,8 @@ public class UserEndpoint {
             case "ADMIN":
                 users = userDao.findByLevelsOfAccess(LevelsOfAccess.ADMIN, pageable);
                 break;
+            default:
+                users = userDao.findByLevelsOfAccess(null, pageable);
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
