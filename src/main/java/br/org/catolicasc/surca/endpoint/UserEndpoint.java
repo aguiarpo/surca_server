@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,14 +114,13 @@ public class UserEndpoint {
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/login/usuario/{email}/{senha}")
-    public ResponseEntity<?> deleteLogin(@PathVariable("email") String email,
-                                         @PathVariable("senha") String password){
-        User user = userDao.findByEmailWithReturnPassword(email);
-        if(BCrypt.checkpw(password, user.getPassword())){
-            userDao.deleteByEmailAndPassword(email, user.getPassword());
+    @DeleteMapping(path = "/login/usuario")
+    public ResponseEntity<?> deleteLogin(@RequestBody User userForDelete){
+        User user = userDao.findByEmailWithReturnPassword(userForDelete.getEmail());
+        if(BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())){
+            userDao.deleteByEmailAndPassword(user.getEmail(), user.getPassword());
         }
-        return new ResponseEntity<>(userDao.findByEmail(email), HttpStatus.OK);
+        return new ResponseEntity<>(userDao.findByEmail(user.getEmail()), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario/{id}")
@@ -131,14 +133,23 @@ public class UserEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/login/usuario")
-    public ResponseEntity<?> updateLogin(@RequestBody User user){
-        user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
-        user.setBcryptPassword();
-        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
+    @PutMapping(path = "/user/usuario")
+    public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User user){
+        String name = auth.getName();
+        User userSave = null;
+        if(name.equals(user.getEmail())){
+            User findUser = userDao.findByEmailWithReturnPassword(user.getEmail());
+            if(BCrypt.checkpw(user.getPassword(), findUser.getPassword())){
+                user.setId(findUser.getId());
+                user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+                user.setBcryptPassword();
+                userSave = userDao.save(user);
+            }
+        }
+        return new ResponseEntity<>(userSave, HttpStatus.OK);
     }
 
-    @PutMapping("/admin/usuario")
+    @PutMapping(path = "/admin/usuario")
     public ResponseEntity<?> update(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
         user.setBcryptPassword();
