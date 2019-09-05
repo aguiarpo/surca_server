@@ -1,6 +1,7 @@
 package br.org.catolicasc.surca.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -47,6 +48,11 @@ public class User extends Auditable{
     @OneToOne(mappedBy = "user")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Vet vet;
+
+    public void setBcryptPassword(){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.password = bCryptPasswordEncoder.encode(password);
+    }
 
     public Long getId() {
         return id;

@@ -83,6 +83,7 @@ public class VetEndpoint {
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         String password = generatePassword();
         vet.getUser().setPassword(password);
+        vet.getUser().setBcryptPassword();
         Vet vetSave = vetDao.save(vet);
         ArrayList<String> recipients = new ArrayList<>();
         recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
@@ -101,6 +102,7 @@ public class VetEndpoint {
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         Vet vetCrmv = vetDao.findByCrmv(vet.getCrmv());
         vet.getUser().setId(vetCrmv.getUser().getId());
+        vet.getUser().setBcryptPassword();
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
     }
 

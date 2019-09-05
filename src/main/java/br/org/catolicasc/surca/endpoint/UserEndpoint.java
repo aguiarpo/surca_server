@@ -99,12 +99,14 @@ public class UserEndpoint {
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+        user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/usuario")
     public ResponseEntity<?> save(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
+        user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
@@ -127,12 +129,14 @@ public class UserEndpoint {
     @PutMapping("/login/usuario")
     public ResponseEntity<?> updateLogin(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+        user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PutMapping("/admin/usuario")
     public ResponseEntity<?> update(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
+        user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
