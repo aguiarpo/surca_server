@@ -51,7 +51,7 @@ public class User extends Auditable{
 
     public void setBcryptPassword(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        this.password = bCryptPasswordEncoder.encode(password);
+        this.password = bCryptPasswordEncoder.encode(this.password);
     }
 
     public Long getId() {
