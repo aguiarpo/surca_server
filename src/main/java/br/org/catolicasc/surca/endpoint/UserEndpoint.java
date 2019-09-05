@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -110,10 +111,14 @@ public class UserEndpoint {
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/login/usuario/{id}")
-    public ResponseEntity<?> deleteLogin(@PathVariable Long id){
-        userDao.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping(path = "/login/usuario/{email}/{senha}")
+    public ResponseEntity<?> deleteLogin(@PathVariable("email") String email,
+                                         @PathVariable("senha") String password){
+        User user = userDao.findByEmail(email);
+        if(BCrypt.checkpw(password, user.getPassword())){
+            userDao.deleteByEmailAndPassword(email, user.getPassword());
+        }
+        return new ResponseEntity<>(userDao.findByEmail(email), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario/{id}")
