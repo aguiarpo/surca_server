@@ -72,6 +72,18 @@ public class VetEndpoint {
         return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/admin/veterinario/cidade/{city}")
+    public ResponseEntity<?> getVetByCityLike(@PathVariable("city") String city, Pageable pageable){
+        Page<Vet> vets =  vetDao.findByUserCityStartingWith(pageable, city);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/veterinario/estado/{state}")
+    public ResponseEntity<?> getVetByState(@PathVariable("state") String state, Pageable pageable){
+        Page<Vet> vets =  vetDao.findByUserState(pageable, state);
+        return new ResponseEntity<>(vets, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/admin/veterinario/criadoPor/{createdBy}")
     public ResponseEntity<?> getCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
         Page<Vet> vets =  vetDao.findByUserCreatedByStartingWith(pageable, name);
