@@ -1,8 +1,10 @@
 package br.org.catolicasc.surca.endpoint;
 
+import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.LevelsOfAccess;
 import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.model.Vet;
+import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,11 +27,13 @@ public class UserEndpoint {
 
     private UserRepository userDao;
     private VetRepository vetDao;
+    private AnimalRepository animalDao;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao, VetRepository vetDao) {
+    public UserEndpoint(UserRepository userDao, VetRepository vetDao, AnimalRepository animalDao) {
         this.userDao = userDao;
         this.vetDao = vetDao;
+        this.animalDao = animalDao;
     }
 
     @GetMapping(path = "/admin/usuario")
@@ -156,10 +161,15 @@ public class UserEndpoint {
     @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Vet vet = vetDao.findByUserId(id);
-        if(vet == null)
+        if(vet == null){
             userDao.deleteById(id);
-        else
+        }
+        else{
+            Long idVet = vet.getId();
+            List<Animal> vets = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
+            animalDao.deleteAll(vets);
             vetDao.deleteById(vet.getId());
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
