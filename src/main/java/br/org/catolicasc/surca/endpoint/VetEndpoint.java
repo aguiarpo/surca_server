@@ -2,8 +2,10 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.email.EmailMessage;
 import br.org.catolicasc.surca.email.Mailer;
+import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.LevelsOfAccess;
 import br.org.catolicasc.surca.model.Vet;
+import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static br.org.catolicasc.surca.endpoint.UserEndpoint.getString;
@@ -23,11 +26,13 @@ import static br.org.catolicasc.surca.endpoint.UserEndpoint.getString;
 public class VetEndpoint {
 
     private VetRepository vetDao;
+    private AnimalRepository animalDao;
     private Mailer mailer;
 
     @Autowired
-    public VetEndpoint(VetRepository vetDao, Mailer mailer) {
+    public VetEndpoint(VetRepository vetDao, AnimalRepository animalDao, Mailer mailer) {
         this.vetDao = vetDao;
+        this.animalDao = animalDao;
         this.mailer = mailer;
     }
 
@@ -94,6 +99,8 @@ public class VetEndpoint {
 
     @DeleteMapping(path = "/admin/veterinario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
+        List<Animal> vets = animalDao.findByVetMicrochipIdOrCastratorId(id, id);
+        animalDao.deleteAll(vets);
         vetDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -101,8 +108,6 @@ public class VetEndpoint {
     @PutMapping(path = "/admin/veterinario")
     public ResponseEntity<?> update(@RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
-        Vet vetCrmv = vetDao.findByCrmv(vet.getCrmv());
-        vet.getUser().setId(vetCrmv.getUser().getId());
         vet.getUser().setBcryptPassword();
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
     }
