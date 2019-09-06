@@ -1,5 +1,7 @@
 package br.org.catolicasc.surca.endpoint;
 
+import br.org.catolicasc.surca.email.EmailMessage;
+import br.org.catolicasc.surca.email.Mailer;
 import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.LevelsOfAccess;
 import br.org.catolicasc.surca.model.User;
@@ -12,13 +14,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("v1")
@@ -27,12 +32,14 @@ public class UserEndpoint {
     private UserRepository userDao;
     private VetRepository vetDao;
     private AnimalRepository animalDao;
+    private Mailer mailer;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao, VetRepository vetDao, AnimalRepository animalDao) {
+    public UserEndpoint(UserRepository userDao, VetRepository vetDao, AnimalRepository animalDao, Mailer mailer) {
         this.userDao = userDao;
         this.vetDao = vetDao;
         this.animalDao = animalDao;
+        this.mailer = mailer;
     }
 
     @GetMapping(path = "/admin/usuario")
@@ -141,9 +148,17 @@ public class UserEndpoint {
 
     @PostMapping(path = "/admin/usuario")
     public ResponseEntity<?> save(@RequestBody User user){
-        user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
+        if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
+            user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+        }
+        String password = generatePassword();
+        user.setPassword(password);
         user.setBcryptPassword();
-        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
+        User userSave = userDao.save(user);
+        ArrayList<String> recipients = new ArrayList<>();
+        recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
+        sendEmail(recipients, password);
+        return new ResponseEntity<>(userSave, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/user/usuario")
@@ -190,6 +205,43 @@ public class UserEndpoint {
     public ResponseEntity<?> update(@RequestBody User user){
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
+    }
+
+    private String generatePassword(){
+        return getString();
+    }
+
+    static String getString() {
+        StringBuilder password = new StringBuilder();
+        Random generator = new Random();
+        int size;
+        char letra;
+        int number;
+        for(int i = 0; i < 8; i++){
+            int random = generator.nextInt(10);
+            if(random % 2 == 0)
+                size = 65;
+            else
+                size = 97;
+
+            if(random > 4){
+                letra = (char) (generator.nextInt(25) + size);
+                password.append(letra);
+            } else{
+                number = generator.nextInt(9);
+                password.append(number);
+            }
+        }
+        return password.toString();
+    }
+
+    private void sendEmail(ArrayList<String> recipients, String body){
+        try{
+            mailer.submit(new EmailMessage("Eduardo Aguiar <emailtestesurca@gmail.com>",
+                    recipients, "Senha", "Senha -> " + body));
+        }catch (MailException ignored){
+
+        }
     }
 
 }
