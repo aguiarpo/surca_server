@@ -100,7 +100,7 @@ public class UserEndpoint {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/login/usuario")
+    @PostMapping(path = "/cadastro/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
