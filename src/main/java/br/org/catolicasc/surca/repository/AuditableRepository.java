@@ -9,4 +9,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface AuditableRepository <T, ID> extends PagingAndSortingRepository<T, ID>{
     Page<T> findByCreatedByStartingWith(Pageable pageable, String name);
     Page<T> findByLastModifiedByStartingWith(Pageable pageable, String name);
+    Page<T> findByNameStartingWith(Pageable pageable, String name);
 }
