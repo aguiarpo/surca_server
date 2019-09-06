@@ -142,13 +142,15 @@ public class UserEndpoint {
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/login/usuario")
-    public ResponseEntity<?> deleteLogin(@RequestBody User userForDelete){
-        User user = userDao.findByEmailWithReturnPassword(userForDelete.getEmail());
-        if(BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())){
-            userDao.deleteByEmailAndPassword(user.getEmail(), user.getPassword());
+    @DeleteMapping(path = "/user/usuario")
+    public ResponseEntity<?> deleteLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User userForDelete){
+        if(auth.getName().equals(userForDelete.getEmail())) {
+            User user = userDao.findByEmailWithReturnPassword(userForDelete.getEmail());
+            if (BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())) {
+                userDao.deleteByEmailAndPassword(user.getEmail(), user.getPassword());
+            }
         }
-        return new ResponseEntity<>(userDao.findByEmail(user.getEmail()), HttpStatus.OK);
+        return new ResponseEntity<>(userDao.findByEmail(auth.getName()), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario/{id}")
