@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Random;
+
+import static br.org.catolicasc.surca.endpoint.UserEndpoint.getString;
 
 @RestController
 @RequestMapping("v1")
@@ -107,27 +108,7 @@ public class VetEndpoint {
     }
 
     private String generatePassword(){
-        StringBuilder password = new StringBuilder();
-        Random generator = new Random();
-        int size;
-        char letra;
-        int number;
-        for(int i = 0; i < 8; i++){
-            int random = generator.nextInt(10);
-            if(random % 2 == 0)
-                size = 65;
-            else
-                size = 97;
-
-            if(random > 4){
-                letra = (char) (generator.nextInt(25) + size);
-                password.append(letra);
-            } else{
-                number = generator.nextInt(9);
-                password.append(number);
-            }
-        }
-        return password.toString();
+        return getString();
     }
 
     private void sendEmail(ArrayList<String> recipients,String body){
