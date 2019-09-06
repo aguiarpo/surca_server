@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 
 public interface UserRepository extends AuditableRepository<User, Long> {
     Page<User> findByName(Pageable pageable, String name);
-    Page<User> findByNameStartingWith(Pageable pageable, String name);
     Page<User> findByEmail(Pageable pageable, String email);
     Page<User> findByCityStartingWith(Pageable pageable, String city);
     Page<User> findByCity(Pageable pageable, String city);
