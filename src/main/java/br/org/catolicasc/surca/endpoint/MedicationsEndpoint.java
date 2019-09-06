@@ -36,6 +36,12 @@ public class MedicationsEndpoint {
         return new ResponseEntity<>(medications, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/veterinario/medicacoes/nome/like/{name}")
+    public ResponseEntity<?> getMedicationByNameLike(@PathVariable("name") String name, Pageable pageable){
+        Page<Medications> medications = medicationsDao.findByNameStartingWith(pageable, name);
+        return new ResponseEntity<>(medications, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/veterinario/medicacoes")
     public ResponseEntity<?> save(@RequestBody Medications medications){
         return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
