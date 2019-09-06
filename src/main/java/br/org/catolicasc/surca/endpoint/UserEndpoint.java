@@ -100,7 +100,7 @@ public class UserEndpoint {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/cadastro/usuario")
+    @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
@@ -135,16 +135,14 @@ public class UserEndpoint {
 
     @PutMapping(path = "/user/usuario")
     public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User user){
-        String name = auth.getName();
+        String email = auth.getName();
         User userSave = null;
-        if(name.equals(user.getEmail())){
-            User findUser = userDao.findByEmailWithReturnPassword(user.getEmail());
-            if(BCrypt.checkpw(user.getPassword(), findUser.getPassword())){
-                user.setId(findUser.getId());
-                user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
-                user.setBcryptPassword();
-                userSave = userDao.save(user);
-            }
+        if(email != null){
+            User findUser = userDao.findByEmailWithReturnPassword(email);
+            user.setId(findUser.getId());
+            user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+            user.setBcryptPassword();
+            userSave = userDao.save(user);
         }
         return new ResponseEntity<>(userSave, HttpStatus.OK);
     }
