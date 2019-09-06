@@ -149,7 +149,6 @@ public class UserEndpoint {
 
     @PutMapping(path = "/admin/usuario")
     public ResponseEntity<?> update(@RequestBody User user){
-        user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
