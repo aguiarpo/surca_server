@@ -194,7 +194,7 @@ public class UserEndpoint {
         if(email != null){
             User findUser = userDao.findByEmailWithReturnPassword(email);
             user.setId(findUser.getId());
-            user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
+            user.setLevelsOfAccess(findUser.getLevelsOfAccess());
             user.setBcryptPassword();
             userSave = userDao.save(user);
         }
