@@ -31,33 +31,61 @@ public class UserEndpoint {
         this.vetDao = vetDao;
     }
 
-    @GetMapping(path = "/user/usuario")
+    @GetMapping(path = "/admin/usuario")
     public ResponseEntity<?> listAll(Pageable pageable){
         return new ResponseEntity<>(userDao.findAll(pageable), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/{id}")
+    @GetMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id){
         Optional<User> user =  userDao.findById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/nome/{nome}")
+    @GetMapping(path = "/admin/usuario/cidade/like/{city}")
+    public ResponseEntity<?> getUserByCity(@PathVariable("city") String city, Pageable pageable){
+        Page<User> user =  userDao.findByCityStartingWith(pageable, city);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/cidade/{city}")
+    public ResponseEntity<?> getUserByCityLike(@PathVariable("city") String city, Pageable pageable){
+        Page<User> user =  userDao.findByCity(pageable, city);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/estado/{state}")
+    public ResponseEntity<?> getUserByState(@PathVariable("state") String state, Pageable pageable){
+        Page<User> user =  userDao.findByState(pageable, state);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/nome/{nome}")
     public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable){
         Page<User> users= userDao.findByName(pageable, name);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/nome/like/{nome}")
+    @GetMapping(path = "/admin/usuario/nome/like/{nome}")
     public ResponseEntity<?> getUserNameLike(@PathVariable("nome") String name, Pageable pageable){
         Page<User> users = userDao.findByNameStartingWith(pageable, name);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/email/{email}")
+    @GetMapping(path = "/admin/usuario/email/{email}")
     public ResponseEntity<?> getUserEmail(@PathVariable("email") String email, Pageable pageable){
         Page<User> users = userDao.findByEmail(pageable, email);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/user/usuario/email")
+    public ResponseEntity<?> getUserEmail(@AuthenticationPrincipal Authentication auth){
+        String email = auth.getName();
+        User user = null;
+        if(email != null){
+            user = userDao.findByEmail(email);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")

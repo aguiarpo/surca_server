@@ -12,8 +12,11 @@ import javax.transaction.Transactional;
 public interface UserRepository extends AuditableRepository<User, Long> {
     Page<User> findByName(Pageable pageable, String name);
     Page<User> findByNameStartingWith(Pageable pageable, String name);
-    Page<User> findByEmail(Pageable pageable, String name);
-    User findByEmail(String name);
+    Page<User> findByEmail(Pageable pageable, String email);
+    Page<User> findByCityStartingWith(Pageable pageable, String city);
+    Page<User> findByCity(Pageable pageable, String city);
+    Page<User> findByState(Pageable pageable, String state);
+    User findByEmail(String email);
     @Query(value = "delete from `user` where email = ?1 and `password` = ?2", nativeQuery = true)
     @Modifying
     @Transactional
