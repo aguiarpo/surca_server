@@ -17,7 +17,7 @@ public class Medications extends Auditable{
     @NotEmpty
     private String name;
 
-    @ManyToMany(mappedBy="medications")
+    @ManyToMany(mappedBy="medications", cascade = CascadeType.REMOVE)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animals;
 
