@@ -15,11 +15,6 @@ public class JpaAuditingConfiguration {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        String email = "";
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null)
-            email = auth.getName();
-        String finalEmail = email;
-        return () -> Optional.of(finalEmail);
+        return () -> Optional.of(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
