@@ -14,43 +14,46 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@Getter
+@Setter
 @SequenceGenerator(name = "user_seq", sequenceName = "user_seq",
         initialValue = 2, allocationSize = 1)
 public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @Getter @Setter private Long id;
+    private Long id;
 
     @NotNull
-    @Getter @Setter private String name;
+    private String name;
 
     @Email
     @Column(unique = true)
-    @Getter @Setter private String email;
+    private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 8)
     @NotEmpty
-    @Getter @Setter private String password;
+    private String password;
 
     @Size(min = 2, max = 2)
     @NotEmpty
-    @Getter @Setter private String state;
+    private String state;
     @NotEmpty
-    @Getter @Setter private String city;
+    private String city;
 
     @NotNull
     @Size(max = 15)
-    @Getter @Setter private String telephone1;
+    private String telephone1;
     @Size(max = 15)
-    @Getter @Setter private String telephone2;
+    private String telephone2;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Getter @Setter private LevelsOfAccess levelsOfAccess;
+    private LevelsOfAccess levelsOfAccess;
 
     @OneToOne(mappedBy = "user")
-    @PrimaryKeyJoinColumn
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Vet vet;
 
     public void setBcryptPassword(){
