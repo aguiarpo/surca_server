@@ -55,7 +55,7 @@ public class Tutor extends Auditable{
     @Size(max = 15)
     private String telephone2;
 
-    @OneToMany(mappedBy = "tutor")
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.REMOVE)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animals;
 }
