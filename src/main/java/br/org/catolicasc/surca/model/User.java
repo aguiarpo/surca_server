@@ -1,5 +1,6 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,7 @@ public class User extends Auditable{
     @NotNull
     private LevelsOfAccess levelsOfAccess;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Vet vet;
