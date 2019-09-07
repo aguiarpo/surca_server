@@ -37,8 +37,14 @@ public class AnimalEndpoint {
 
     @GetMapping(path = "/user/animal/{id}")
     public ResponseEntity<?> getAnimalById(@PathVariable("id")Long id){
-        Optional<Animal> animalModel =  animalDao.findById(id);
-        return new ResponseEntity<>(animalModel, HttpStatus.OK);
+        Optional<Animal> animal =  animalDao.findById(id);
+        return new ResponseEntity<>(animal, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/user/animal/{microchipNumber}")
+    public ResponseEntity<?> getAnimalByMicrochipNumber(@PathVariable("microchipNumber")String microchipNumber){
+        Animal animal =  animalDao.findByMicrochipNumber(microchipNumber);
+        return new ResponseEntity<>(animal, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/nome/{nome}")
