@@ -1,5 +1,7 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +57,7 @@ public class Tutor extends Auditable{
     @Size(max = 15)
     private String telephone2;
 
-    @OneToMany(mappedBy = "tutor", cascade = CascadeType.REMOVE)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "tutor")
     private List<Animal> animals;
 }
