@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,8 +20,10 @@ public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
     private Long id;
+    @Column(unique = true)
     @NotNull
-    private Integer microchipNumber;
+    @Size(max = 20)
+    private String microchipNumber;
     @NotEmpty
     private String name;
     @NotEmpty
