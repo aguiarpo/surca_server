@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static br.org.catolicasc.surca.endpoint.UserEndpoint.getString;
+import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
 
 @RestController
 @RequestMapping("v1")
@@ -99,7 +99,7 @@ public class VetEndpoint {
     @PostMapping(path = "/admin/veterinario")
     public ResponseEntity<?> save(@RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
-        String password = generatePassword();
+        String password = getPassword();
         vet.getUser().setPassword(password);
         vet.getUser().setBcryptPassword();
         Vet vetSave = vetDao.save(vet);
@@ -122,10 +122,6 @@ public class VetEndpoint {
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         vet.getUser().setBcryptPassword();
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
-    }
-
-    private String generatePassword(){
-        return getString();
     }
 
     private void sendEmail(ArrayList<String> recipients,String body){

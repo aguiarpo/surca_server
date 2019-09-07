@@ -50,6 +50,7 @@ public class User extends Auditable{
     @Getter @Setter private LevelsOfAccess levelsOfAccess;
 
     @OneToOne(mappedBy = "user")
+    @PrimaryKeyJoinColumn
     private Vet vet;
 
     public void setBcryptPassword(){

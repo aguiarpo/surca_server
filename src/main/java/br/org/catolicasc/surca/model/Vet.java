@@ -25,6 +25,8 @@ public class Vet{
     private String crmv;
     @OneToOne(cascade = CascadeType.ALL)
     @NotNull
+    @MapsId
+    @JoinColumn(name = "id")
     private User user;
 
     @OneToMany(mappedBy = "vetMicrochip")

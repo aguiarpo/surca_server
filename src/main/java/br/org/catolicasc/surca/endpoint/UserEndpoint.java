@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+
+import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
 
 @RestController
 @RequestMapping("v1")
@@ -151,7 +152,7 @@ public class UserEndpoint {
         if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
             user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         }
-        String password = generatePassword();
+        String password = getPassword();
         user.setPassword(password);
         user.setBcryptPassword();
         User userSave = userDao.save(user);
@@ -179,10 +180,7 @@ public class UserEndpoint {
             userDao.deleteById(id);
         }
         else{
-            Long idVet = vet.getId();
-            List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
-            animalDao.deleteAll(animals);
-            vetDao.deleteById(vet.getId());
+            deleteVetAndAnimals(vet);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -194,10 +192,7 @@ public class UserEndpoint {
             if(vet == null)
                 userDao.deleteById(user.getId());
             else {
-                Long idVet = vet.getId();
-                List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
-                animalDao.deleteAll(animals);
-                vetDao.deleteById(vet.getId());
+                deleteVetAndAnimals(vet);
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -223,34 +218,6 @@ public class UserEndpoint {
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
-    private String generatePassword(){
-        return getString();
-    }
-
-    static String getString() {
-        StringBuilder password = new StringBuilder();
-        Random generator = new Random();
-        int size;
-        char letra;
-        int number;
-        for(int i = 0; i < 8; i++){
-            int random = generator.nextInt(10);
-            if(random % 2 == 0)
-                size = 65;
-            else
-                size = 97;
-
-            if(random > 4){
-                letra = (char) (generator.nextInt(25) + size);
-                password.append(letra);
-            } else{
-                number = generator.nextInt(9);
-                password.append(number);
-            }
-        }
-        return password.toString();
-    }
-
     private void sendEmail(ArrayList<String> recipients, String body){
         try{
             mailer.submit(new EmailMessage("Eduardo Aguiar <emailtestesurca@gmail.com>",
@@ -260,4 +227,10 @@ public class UserEndpoint {
         }
     }
 
+    private void deleteVetAndAnimals(Vet vet){
+        Long idVet = vet.getId();
+        List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
+        animalDao.deleteAll(animals);
+        vetDao.deleteById(vet.getId());
+    }
 }
