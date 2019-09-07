@@ -2,6 +2,7 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Tutor;
+import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +18,12 @@ import java.util.Optional;
 public class TutorEndpoint {
 
     private TutorRepository tutorDao;
+    private AnimalRepository animalDao;
 
     @Autowired
-    public TutorEndpoint(TutorRepository tutorDao) {
+    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao) {
         this.tutorDao = tutorDao;
+        this.animalDao = animalDao;
     }
 
     @GetMapping(path = "/user/tutor")
@@ -78,7 +81,8 @@ public class TutorEndpoint {
 
     @PostMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> save(@RequestBody Tutor tutor){
-        return new ResponseEntity<>( tutorDao.save(tutor), HttpStatus.OK);
+        Tutor savedTutor = tutorDao.save(tutor);
+        return new ResponseEntity<>(savedTutor, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/veterinario/tutor/{id}")
