@@ -1,5 +1,7 @@
 package br.org.catolicasc.surca.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 class Auditable {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
@@ -30,36 +34,4 @@ class Auditable {
     private String createdBy;
     @LastModifiedBy
     private String lastModifiedBy;
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
 }

@@ -1,5 +1,7 @@
 package br.org.catolicasc.surca.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @SequenceGenerator(name = "password_reset_token_seq", sequenceName = "password_reset_token_seq",
         initialValue = 2, allocationSize = 1)
 public class PasswordResetToken {
@@ -26,40 +30,4 @@ public class PasswordResetToken {
     private User user;
 
     private LocalDateTime expiryDate;
-
-    public static int getEXPIRATION() {
-        return EXPIRATION;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 }

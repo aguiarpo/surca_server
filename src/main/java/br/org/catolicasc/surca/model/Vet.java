@@ -2,6 +2,8 @@ package br.org.catolicasc.surca.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @SequenceGenerator(name = "vet_seq", sequenceName = "vet_seq",
         initialValue = 2, allocationSize = 1)
 public class Vet{
@@ -31,43 +35,4 @@ public class Vet{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animalsCastrator;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCrmv() {
-        return crmv;
-    }
-
-    public void setCrmv(String crmv) {
-        this.crmv = crmv;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Animal> getAnimalsMicrochip() {
-        return animalsMicrochip;
-    }
-
-    public void setAnimalsMicrochip(List<Animal> animalsMicrochip) {
-        this.animalsMicrochip = animalsMicrochip;
-    }
-
-    public List<Animal> getAnimalsCastrator() {
-        return animalsCastrator;
-    }
-
-    public void setAnimalsCastrator(List<Animal> animalsCastrator) {
-        this.animalsCastrator = animalsCastrator;
-    }
 }

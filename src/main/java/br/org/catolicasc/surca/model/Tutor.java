@@ -1,6 +1,8 @@
 package br.org.catolicasc.surca.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @SequenceGenerator(name = "tutor_seq", sequenceName = "tutor_seq",
         initialValue = 2, allocationSize = 1)
 public class Tutor extends Auditable{
@@ -54,132 +58,4 @@ public class Tutor extends Auditable{
     @OneToMany(mappedBy = "tutor")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animals;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getRg() {
-        return rg;
-    }
-
-    public void setRg(String rg) {
-        this.rg = rg;
-    }
-
-    public String getMotherName() {
-        return motherName;
-    }
-
-    public void setMotherName(String motherName) {
-        this.motherName = motherName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public Short getNumber() {
-        return number;
-    }
-
-    public void setNumber(Short number) {
-        this.number = number;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
-    public String getComplement() {
-        return complement;
-    }
-
-    public void setComplement(String complement) {
-        this.complement = complement;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
-    }
-
-    public String getTelephone1() {
-        return telephone1;
-    }
-
-    public void setTelephone1(String telephone1) {
-        this.telephone1 = telephone1;
-    }
-
-    public String getTelephone2() {
-        return telephone2;
-    }
-
-    public void setTelephone2(String telephone2) {
-        this.telephone2 = telephone2;
-    }
-
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }

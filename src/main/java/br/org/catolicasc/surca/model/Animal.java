@@ -1,5 +1,8 @@
 package br.org.catolicasc.surca.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -8,6 +11,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @SequenceGenerator(name = "animal_seq", sequenceName = "animal_seq",
         initialValue = 2, allocationSize = 1)
 public class Animal extends Auditable{
@@ -57,132 +62,4 @@ public class Animal extends Auditable{
             {@JoinColumn(name="animal_id")}, inverseJoinColumns=
             {@JoinColumn(name="medications_id")})
     private List<Medications> medications;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getMicrochipNumber() {
-        return microchipNumber;
-    }
-
-    public void setMicrochipNumber(Integer microchipNumber) {
-        this.microchipNumber = microchipNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
-    public Boolean getAnimalCastrated() {
-        return animalCastrated;
-    }
-
-    public void setAnimalCastrated(Boolean animalCastrated) {
-        this.animalCastrated = animalCastrated;
-    }
-
-    public String getCoatColor() {
-        return coatColor;
-    }
-
-    public void setCoatColor(String coatColor) {
-        this.coatColor = coatColor;
-    }
-
-    public String getBreed() {
-        return breed;
-    }
-
-    public void setBreed(String breed) {
-        this.breed = breed;
-    }
-
-    public Short getSizeCm() {
-        return sizeCm;
-    }
-
-    public void setSizeCm(Short sizeCm) {
-        this.sizeCm = sizeCm;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public Tutor getTutor() {
-        return tutor;
-    }
-
-    public void setTutor(Tutor tutor) {
-        this.tutor = tutor;
-    }
-
-    public Vet getVetMicrochip() {
-        return vetMicrochip;
-    }
-
-    public void setVetMicrochip(Vet vetMicrochip) {
-        this.vetMicrochip = vetMicrochip;
-    }
-
-    public Vet getCastrator() {
-        return castrator;
-    }
-
-    public void setCastrator(Vet castrator) {
-        this.castrator = castrator;
-    }
-
-    public List<Vaccine> getVaccines() {
-        return vaccines;
-    }
-
-    public void setVaccines(List<Vaccine> vaccines) {
-        this.vaccines = vaccines;
-    }
-
-    public List<Medications> getMedications() {
-        return medications;
-    }
-
-    public void setMedications(List<Medications> medications) {
-        this.medications = medications;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public LocalDate getDateMicrochip() {
-        return dateMicrochip;
-    }
-
-    public void setDateMicrochip(LocalDate dateMicrochip) {
-        this.dateMicrochip = dateMicrochip;
-    }
 }
