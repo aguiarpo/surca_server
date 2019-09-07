@@ -63,9 +63,15 @@ public class TutorEndpoint {
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/tutor/cidade/{city}")
+    @GetMapping(path = "/user/tutor/cidade/like/{city}")
     public ResponseEntity<?> getTutorByCity(@PathVariable("city")String city, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByCity(pageable, city);
+        Page<Tutor> tutors =  tutorDao.findByCityStartingWith(pageable, city);
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/user/tutor/estado/{state}")
+    public ResponseEntity<?> getTutorByState(@PathVariable("state")String state, Pageable pageable){
+        Page<Tutor> tutors =  tutorDao.findByState(pageable, state);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
