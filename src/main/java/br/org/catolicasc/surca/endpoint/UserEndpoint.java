@@ -180,20 +180,27 @@ public class UserEndpoint {
         }
         else{
             Long idVet = vet.getId();
-            List<Animal> vets = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
-            animalDao.deleteAll(vets);
+            List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
+            animalDao.deleteAll(animals);
             vetDao.deleteById(vet.getId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario")
-    public ResponseEntity<?> deleteAll(List<User> users){
-//        for(User user : users){
-//            if(user.getLevelsOfAccess() == LevelsOfAccess.VETERINARIO){
-//            }
-//        }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> deleteAll(@RequestBody List<User> users){
+        for(User user : users){
+            Vet vet = vetDao.findByUserId(user.getId());
+            if(vet == null)
+                userDao.deleteById(user.getId());
+            else {
+                Long idVet = vet.getId();
+                List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
+                animalDao.deleteAll(animals);
+                vetDao.deleteById(vet.getId());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/user/usuario")

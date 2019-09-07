@@ -1,5 +1,6 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -49,11 +50,6 @@ public class User extends Auditable{
     @Enumerated(EnumType.STRING)
     @NotNull
     private LevelsOfAccess levelsOfAccess;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    @PrimaryKeyJoinColumn
-    private Vet vet;
 
     public void setBcryptPassword(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
