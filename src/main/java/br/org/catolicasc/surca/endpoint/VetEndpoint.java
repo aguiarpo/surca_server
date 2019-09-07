@@ -111,8 +111,8 @@ public class VetEndpoint {
 
     @DeleteMapping(path = "/admin/veterinario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
-        List<Animal> vets = animalDao.findByVetMicrochipIdOrCastratorId(id, id);
-        animalDao.deleteAll(vets);
+        List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(id, id);
+        animalDao.deleteAll(animals);
         vetDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
