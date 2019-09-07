@@ -1,6 +1,7 @@
 
 package br.org.catolicasc.surca.endpoint;
 
+import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.Tutor;
 import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -87,6 +89,9 @@ public class TutorEndpoint {
 
     @DeleteMapping(path = "/veterinario/tutor/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
+        List<Animal> animals = animalDao.findByTutorId(id);
+        if(!animals.isEmpty())
+            animalDao.deleteAll(animals);
         tutorDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
