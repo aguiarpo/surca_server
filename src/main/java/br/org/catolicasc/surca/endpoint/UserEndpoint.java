@@ -187,6 +187,15 @@ public class UserEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/admin/usuario")
+    public ResponseEntity<?> deleteAll(List<User> users){
+//        for(User user : users){
+//            if(user.getLevelsOfAccess() == LevelsOfAccess.VETERINARIO){
+//            }
+//        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @PutMapping(path = "/user/usuario")
     public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User user){
         String email = auth.getName();

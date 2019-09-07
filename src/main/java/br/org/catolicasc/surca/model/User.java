@@ -52,7 +52,7 @@ public class User extends Auditable{
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @PrimaryKeyJoinColumn
     private Vet vet;
 
     public void setBcryptPassword(){
