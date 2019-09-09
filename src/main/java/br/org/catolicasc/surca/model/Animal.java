@@ -2,6 +2,7 @@ package br.org.catolicasc.surca.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Indexed;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -16,6 +17,11 @@ import java.util.List;
 @Setter
 @SequenceGenerator(name = "animal_seq", sequenceName = "animal_seq",
         initialValue = 2, allocationSize = 1)
+@Table(indexes = {@Index(name = "index_name", columnList="name"),
+                @Index(name = "index_species", columnList="species"),
+                @Index(name = "index_birth_date", columnList="birthDate"),
+                @Index(name = "index_breed", columnList="breed"),
+                @Index(name = "index_date_microchip", columnList="dateMicrochip")})
 public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")

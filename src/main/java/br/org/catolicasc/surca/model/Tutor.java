@@ -18,6 +18,10 @@ import java.util.List;
 @Setter
 @SequenceGenerator(name = "tutor_seq", sequenceName = "tutor_seq",
         initialValue = 2, allocationSize = 1)
+@Table(indexes = {@Index(name = "index_name", columnList="name"),
+        @Index(name = "index_mother_name", columnList="motherName"),
+        @Index(name = "index_city", columnList="city"),
+        @Index(name = "index_state", columnList="state")})
 public class Tutor extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tutor_seq")

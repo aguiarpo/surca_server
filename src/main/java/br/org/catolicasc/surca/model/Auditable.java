@@ -10,9 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -20,6 +18,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@Table(indexes = {@Index(name = "index_created_by", columnList="createdBy"),
+        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
 class Auditable {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @CreatedDate

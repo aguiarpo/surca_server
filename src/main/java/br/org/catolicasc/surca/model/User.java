@@ -17,6 +17,10 @@ import javax.validation.constraints.Size;
 @Setter
 @SequenceGenerator(name = "user_seq", sequenceName = "user_seq",
         initialValue = 2, allocationSize = 1)
+@Table(indexes = {@Index(name = "index_name", columnList="name"),
+        @Index(name = "index_levels_of_access", columnList="levelsOfAccess"),
+        @Index(name = "index_city", columnList="city"),
+        @Index(name = "index_state", columnList="state")})
 public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")

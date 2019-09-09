@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @SequenceGenerator(name = "medications_seq", sequenceName = "medications_seq",
         initialValue = 2, allocationSize = 1)
+@Table(indexes = {@Index(name = "index_name", columnList="name")})
 public class Medications extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medications_seq")
