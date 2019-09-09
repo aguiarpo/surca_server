@@ -20,6 +20,18 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException rfnException){
+        ErrorDetailsWithFieldMessage rfnExceptionDetails =  ErrorDetailsWithFieldMessage.Builder.newBuilder()
+                .timestamp(new Date().getTime())
+                .status(HttpStatus.NOT_FOUND.value())
+                .title("Resource Not Found")
+                .detail(rfnException.getMessage())
+                .developmentMessage(rfnException.getClass().getName())
+                .build();
+        return new ResponseEntity<>(rfnExceptionDetails, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException cvException){
         String constraintName;
