@@ -32,16 +32,19 @@ public class PasswordResetTokenEndpoint {
         this.userDao = userDao;
     }
 
-    @GetMapping(path = "/login/recuperarSenha/{id}/{token}")
-    public ResponseEntity<?> resetPassword(@PathVariable("id") Long id, @PathVariable("token") String token){
+    @GetMapping(path = "/login/recuperarSenha/{token}")
+    public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("token") String token){
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/recuperarSenha")
     public ResponseEntity<?> createToken(@RequestBody User user, HttpServletRequest request){
         user = userDao.findByEmail(user.getEmail());
-        String token = generateToken();
-        createPasswordResetTokenForUser(user, token);
+        if(user != null){
+            String token = generateToken();
+            createPasswordResetTokenForUser(user, token);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -68,23 +71,10 @@ public class PasswordResetTokenEndpoint {
     private String generateToken(){
         StringBuilder token = new StringBuilder();
         Random generator = new Random();
-        int size;
-        char letra;
         int number;
         for(int i = 0; i < 6; i++){
-            int random = generator.nextInt(10);
-            if(random % 2 == 0)
-                size = 65;
-            else
-                size = 97;
-
-            if(random > 4){
-                letra = (char) (generator.nextInt(25) + size);
-                token.append(letra);
-            } else{
                 number = generator.nextInt(9);
                 token.append(number);
-            }
         }
         return token.toString();
     }
