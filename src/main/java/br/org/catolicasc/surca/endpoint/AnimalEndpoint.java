@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,7 +128,7 @@ public class AnimalEndpoint {
     }
 
     @PostMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> save(@RequestBody Animal animal){
+    public ResponseEntity<?> save(@Valid @RequestBody Animal animal){
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
         animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
         animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
@@ -165,7 +166,7 @@ public class AnimalEndpoint {
 
 
     @PutMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> update(@RequestBody Animal animal){
+    public ResponseEntity<?> update(@Valid @RequestBody Animal animal){
         animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
         animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());

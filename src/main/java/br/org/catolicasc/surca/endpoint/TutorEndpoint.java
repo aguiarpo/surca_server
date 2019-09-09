@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,7 +89,7 @@ public class TutorEndpoint {
     }
 
     @PostMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> save(@RequestBody Tutor tutor){
+    public ResponseEntity<?> save(@Valid @RequestBody Tutor tutor){
         Tutor savedTutor = tutorDao.save(tutor);
         return new ResponseEntity<>(savedTutor, HttpStatus.OK);
     }
@@ -115,7 +116,7 @@ public class TutorEndpoint {
     }
 
     @PutMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> update(@RequestBody Tutor tutor){
+    public ResponseEntity<?> update(@Valid @RequestBody Tutor tutor){
         return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
     }
 }

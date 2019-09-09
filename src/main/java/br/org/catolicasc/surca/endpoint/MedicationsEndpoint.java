@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -57,7 +58,7 @@ public class MedicationsEndpoint {
     }
 
     @PostMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> save(@RequestBody Medications medications){
+    public ResponseEntity<?> save(@Valid @RequestBody Medications medications){
         return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
     }
 
@@ -76,7 +77,7 @@ public class MedicationsEndpoint {
     }
 
     @PutMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> update(@RequestBody Medications medications){
+    public ResponseEntity<?> update(@Valid @RequestBody Medications medications){
         return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
     }
 }

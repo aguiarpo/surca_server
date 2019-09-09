@@ -142,14 +142,14 @@ public class UserEndpoint {
     }
 
     @PostMapping(path = "/login/usuario")
-    public ResponseEntity<?> saveLogin(@RequestBody User user){
+    public ResponseEntity<?> saveLogin(@Valid @RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/usuario")
-    public ResponseEntity<?> save(@RequestBody User user){
+    public ResponseEntity<?> save(@Valid @RequestBody User user){
         if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
             user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         }
@@ -200,7 +200,7 @@ public class UserEndpoint {
     }
 
     @PutMapping(path = "/user/usuario")
-    public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User user){
+    public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @Valid @RequestBody User user){
         String email = auth.getName();
         User userSave = null;
         if(email != null){
@@ -214,7 +214,7 @@ public class UserEndpoint {
     }
 
     @PutMapping(path = "/admin/usuario")
-    public ResponseEntity<?> update(@RequestBody User user){
+    public ResponseEntity<?> update(@Valid @RequestBody User user){
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }

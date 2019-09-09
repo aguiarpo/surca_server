@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -97,7 +98,7 @@ public class VetEndpoint {
     }
 
     @PostMapping(path = "/admin/veterinario")
-    public ResponseEntity<?> save(@RequestBody Vet vet){
+    public ResponseEntity<?> save(@Valid @RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         String password = getPassword();
         vet.getUser().setPassword(password);
@@ -129,7 +130,7 @@ public class VetEndpoint {
     }
 
     @PutMapping(path = "/admin/veterinario")
-    public ResponseEntity<?> update(@RequestBody Vet vet){
+    public ResponseEntity<?> update(@Valid @RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         vet.getUser().setBcryptPassword();
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
