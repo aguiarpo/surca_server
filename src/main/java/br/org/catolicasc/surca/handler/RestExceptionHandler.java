@@ -22,7 +22,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         if(cvException.getConstraintName() == null){
             constraintName = "Desculpa mas nehuma informação pode ser nula";
         }else{
-            constraintName = "A propriedade " + cvException.getConstraintName() + " já foi cadastrado" ;
+            constraintName = "A propriedade " + cvException.getConstraintName() + " já foi cadastrado(a)" ;
         }
 
         ErrorDetailsWithFieldMessage cvExceptionDetail =  ErrorDetailsWithFieldMessage.Builder.newBuilder()
@@ -31,7 +31,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .title("ConstraintViolationException")
                 .detail(cvException.getMessage())
                 .developmentMessage(cvException.getClass().getName())
-                .field("Erro ao se conectar no Banco de Dados")
+                .field("Erro ao se conectar ao Banco de Dados")
                 .fieldMessage(constraintName)
                 .build();
         return new ResponseEntity<>(cvExceptionDetail, HttpStatus.NOT_FOUND);
