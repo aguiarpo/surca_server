@@ -6,12 +6,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -35,6 +39,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .fieldMessage(constraintName)
                 .build();
         return new ResponseEntity<>(cvExceptionDetail, HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException mnvException, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<FieldError> fieldErrors = mnvException.getBindingResult().getFieldErrors();
+        String fieldError = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(", "));
+        String fieldErrorDefaultMessage = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
+        ValidationErrorDetails validationErrorDetails =  ValidationErrorDetails.Builder.newBuilder()
+                .timestamp(new Date().getTime())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title("Field Validation Error")
+                .detail("Field Validation Error")
+                .developmentMessage(mnvException.getClass().getName())
+                .field(fieldError)
+                .fieldMessage(fieldErrorDefaultMessage)
+                .build();
+        return new ResponseEntity<>(validationErrorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PropertyReferenceException.class)
