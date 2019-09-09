@@ -1,6 +1,8 @@
 package br.org.catolicasc.surca.endpoint;
 
+import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.Vaccine;
+import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("v1")
@@ -53,6 +57,13 @@ public class VaccineEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/veterinario/vacinas")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Vaccine> vaccines){
+        for(Vaccine vaccine : vaccines) {
+            vaccineDao.delete(vaccine);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PutMapping(path = "/veterinario/vacinas")
     public ResponseEntity<?> update(@RequestBody Vaccine vaccine){
