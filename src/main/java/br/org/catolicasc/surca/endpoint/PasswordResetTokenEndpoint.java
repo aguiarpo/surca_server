@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -41,8 +40,27 @@ public class PasswordResetTokenEndpoint {
         return new ResponseEntity<>(passwordResetToken, HttpStatus.OK);
     }
 
+    @PutMapping(path = "/login/recuperarSenha/{id}/{token}")
+    public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("id") Long id, @PathVariable("token") String token){
+        PasswordResetToken passwordResetToken;
+            Optional<User> findUser = userDao.findById(id);
+            if(findUser.isPresent() && user.getEmail() != null && user.getPassword() != null){
+                user.setBcryptPassword();
+                String password = user.getPassword();
+                user = userDao.findByEmail(user.getEmail());
+                if(id.equals(user.getId())){
+                    passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(id, token);
+                    if(passwordResetToken != null){
+                        user.setPassword(password);
+                        userDao.save(user);
+                    }
+                }
+            }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(path = "/login/recuperarSenha")
-    public ResponseEntity<?> createToken(@RequestBody User user, HttpServletRequest request){
+    public ResponseEntity<?> createToken(@RequestBody User user){
         user = userDao.findByEmail(user.getEmail());
         if(user != null){
             String token = generateToken();
