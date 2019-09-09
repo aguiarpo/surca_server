@@ -22,7 +22,8 @@ import javax.validation.constraints.Size;
         @Index(name = "index_city", columnList="city"),
         @Index(name = "index_state", columnList="state"),
         @Index(name = "index_created_by", columnList="createdBy"),
-        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
+        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")},
+        uniqueConstraints = @UniqueConstraint(name = "email", columnNames=  "email" ))
 public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
@@ -32,7 +33,6 @@ public class User extends Auditable{
     private String name;
 
     @Email
-    @Column(unique = true)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

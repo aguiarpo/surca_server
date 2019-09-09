@@ -15,11 +15,11 @@ import java.util.List;
 @Setter
 @SequenceGenerator(name = "vet_seq", sequenceName = "vet_seq",
         initialValue = 2, allocationSize = 1)
+@Table(uniqueConstraints = @UniqueConstraint(name = "crmv", columnNames=  "crmv" ))
 public class Vet{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vet_seq")
     private Long id;
-    @Column(unique = true)
     @NotNull
     @Size(max = 20)
     private String crmv;

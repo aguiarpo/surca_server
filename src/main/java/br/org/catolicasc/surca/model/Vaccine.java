@@ -14,12 +14,12 @@ import java.util.List;
 @SequenceGenerator(name = "vaccine_seq", sequenceName = "vaccine_seq",
         initialValue = 2, allocationSize = 1)
 @Table(indexes = {@Index(name = "index_created_by", columnList="createdBy"),
-        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
+        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")},
+        uniqueConstraints = @UniqueConstraint(name = "name", columnNames=  "name" ))
 public class Vaccine extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccine_seq")
     private Long id;
-    @Column(unique = true)
     @NotEmpty
     private String name;
 

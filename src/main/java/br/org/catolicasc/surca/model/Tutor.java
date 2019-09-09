@@ -23,17 +23,16 @@ import java.util.List;
         @Index(name = "index_city", columnList="city"),
         @Index(name = "index_state", columnList="state"),
         @Index(name = "index_created_by", columnList="createdBy"),
-        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
+        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")},
+        uniqueConstraints = {@UniqueConstraint(name = "cpf", columnNames=  "cpf" ), @UniqueConstraint(name = "rg", columnNames = "rg")})
 public class Tutor extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tutor_seq")
     private Long id;
-    @Column(unique = true)
     @CPF
     @NotEmpty
     @Size(min = 14, max = 14)
     private String cpf;
-    @Column(unique = true)
     @NotEmpty
     @Size(max = 10)
     private String rg;

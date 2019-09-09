@@ -23,12 +23,12 @@ import java.util.List;
                 @Index(name = "index_breed", columnList="breed"),
                 @Index(name = "index_date_microchip", columnList="dateMicrochip"),
                 @Index(name = "index_created_by", columnList="createdBy"),
-                @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
+                @Index(name = "index_last_modified_by", columnList="lastModifiedBy")},
+                uniqueConstraints = @UniqueConstraint(name = "microchip_number", columnNames=  "microchipNumber" ))
 public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
     private Long id;
-    @Column(unique = true)
     @NotNull
     @Size(max = 20)
     private String microchipNumber;
