@@ -4,4 +4,5 @@ import br.org.catolicasc.surca.model.PasswordResetToken;
 import org.springframework.data.repository.CrudRepository;
 
 public interface PasswordResetTokenRepository extends CrudRepository<PasswordResetToken, Long> {
+    PasswordResetToken findByUserIdAndToken(Long id, String token);
 }

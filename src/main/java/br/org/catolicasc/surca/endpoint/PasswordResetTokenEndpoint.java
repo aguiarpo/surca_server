@@ -13,7 +13,6 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,8 +33,12 @@ public class PasswordResetTokenEndpoint {
 
     @GetMapping(path = "/login/recuperarSenha/{token}")
     public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("token") String token){
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        PasswordResetToken passwordResetToken = null;
+        if(user.getEmail() != null){
+            user = userDao.findByEmail(user.getEmail());
+            passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(user.getId(), token);
+        }
+        return new ResponseEntity<>(passwordResetToken, HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/recuperarSenha")
@@ -62,10 +65,16 @@ public class PasswordResetTokenEndpoint {
         PasswordResetToken myToken = new PasswordResetToken();
         myToken.setUser(user);
         myToken.setToken(token);
+        myToken.setExpiryDate(createExpiryDate());
         passwordResetTokenDao.save(myToken);
         ArrayList<String> recipients = new ArrayList<>();
         recipients.add(user.getEmail());
         sendEmail(recipients, token);
+    }
+
+    private LocalDateTime createExpiryDate(){
+        LocalDateTime today = LocalDateTime.now();
+        return today.plusDays(1);
     }
 
     private String generateToken(){
