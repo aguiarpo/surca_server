@@ -117,6 +117,17 @@ public class VetEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/admin/veterinario")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Vet> vets){
+        for(Vet vet : vets) {
+            Long id = vet.getId();
+            List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(id, id);
+            animalDao.deleteAll(animals);
+            vetDao.deleteById(id);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping(path = "/admin/veterinario")
     public ResponseEntity<?> update(@RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
