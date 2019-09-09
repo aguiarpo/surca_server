@@ -3,8 +3,10 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.Tutor;
+import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
+import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +25,13 @@ public class TutorEndpoint {
 
     private TutorRepository tutorDao;
     private AnimalRepository animalDao;
+    private VetRepository vetDao;
 
     @Autowired
-    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao) {
+    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao, VetRepository vetDao) {
         this.tutorDao = tutorDao;
         this.animalDao = animalDao;
+        this.vetDao = vetDao;
     }
 
     @GetMapping(path = "/user/tutor")
@@ -90,7 +95,16 @@ public class TutorEndpoint {
 
     @PostMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> save(@Valid @RequestBody Tutor tutor){
+        List<Animal> animals = tutor.getAnimals();
         Tutor savedTutor = tutorDao.save(tutor);
+        if(animals != null) {
+            for (Animal animal : animals) {
+                animal.setTutor(tutor);
+                animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
+                animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
+                animalDao.save(animal);
+            }
+        }
         return new ResponseEntity<>(savedTutor, HttpStatus.OK);
     }
 
@@ -118,5 +132,9 @@ public class TutorEndpoint {
     @PutMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> update(@Valid @RequestBody Tutor tutor){
         return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
+    }
+
+    private Vet findByCrmv(String crmv){
+        return vetDao.findByCrmv(crmv);
     }
 }
