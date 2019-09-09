@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("v1")
 public class MedicationsEndpoint {
@@ -53,6 +55,13 @@ public class MedicationsEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/veterinario/vacinas")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Medications> medications){
+        for(Medications medication : medications) {
+            medicationsDao.delete(medication);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PutMapping(path = "/veterinario/medicacoes")
     public ResponseEntity<?> update(@RequestBody Medications medications){

@@ -102,6 +102,17 @@ public class TutorEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/veterinario/vacinas")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Tutor> tutors){
+        for(Tutor tutor : tutors) {
+            Long id = tutor.getId();
+            List<Animal> animals = animalDao.findByTutorId(id);
+            if(!animals.isEmpty())
+                animalDao.deleteAll(animals);
+            tutorDao.deleteById(id);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PutMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> update(@RequestBody Tutor tutor){

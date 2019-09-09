@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -133,6 +134,19 @@ public class AnimalEndpoint {
         animalDao.deleteById(id);
         if(animalDao.findByTutorWithAnimal(tutorId) == 0){
             tutorDao.deleteById(tutorId);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/veterinario/vacinas")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Animal> animals){
+        for(Animal animal : animals) {
+            Long id = animal.getId();
+            Long tutorId = animalDao.findIdByIdTutor(id);
+            animalDao.deleteById(id);
+            if(animalDao.findByTutorWithAnimal(tutorId) == 0){
+                tutorDao.deleteById(tutorId);
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
