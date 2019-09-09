@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@Table(indexes = {@Index(name = "index_created_by", columnList="createdBy"),
-        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
 class Auditable {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @CreatedDate

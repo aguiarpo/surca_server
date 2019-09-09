@@ -21,7 +21,9 @@ import java.util.List;
                 @Index(name = "index_species", columnList="species"),
                 @Index(name = "index_birth_date", columnList="birthDate"),
                 @Index(name = "index_breed", columnList="breed"),
-                @Index(name = "index_date_microchip", columnList="dateMicrochip")})
+                @Index(name = "index_date_microchip", columnList="dateMicrochip"),
+                @Index(name = "index_created_by", columnList="createdBy"),
+                @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
 public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")

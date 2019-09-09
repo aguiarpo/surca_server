@@ -20,7 +20,9 @@ import javax.validation.constraints.Size;
 @Table(indexes = {@Index(name = "index_name", columnList="name"),
         @Index(name = "index_levels_of_access", columnList="levelsOfAccess"),
         @Index(name = "index_city", columnList="city"),
-        @Index(name = "index_state", columnList="state")})
+        @Index(name = "index_state", columnList="state"),
+        @Index(name = "index_created_by", columnList="createdBy"),
+        @Index(name = "index_last_modified_by", columnList="lastModifiedBy")})
 public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
