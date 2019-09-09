@@ -102,7 +102,7 @@ public class TutorEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/vacinas")
+    @DeleteMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> deleteAll(@RequestBody List<Tutor> tutors){
         for(Tutor tutor : tutors) {
             Long id = tutor.getId();

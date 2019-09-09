@@ -55,7 +55,7 @@ public class MedicationsEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/vacinas")
+    @DeleteMapping(path = "/veterinario/medicacoes")
     public ResponseEntity<?> deleteAll(@RequestBody List<Medications> medications){
         for(Medications medication : medications) {
             medicationsDao.delete(medication);

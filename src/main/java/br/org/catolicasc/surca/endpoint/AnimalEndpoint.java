@@ -138,7 +138,7 @@ public class AnimalEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/vacinas")
+    @DeleteMapping(path = "/veterinario/animal")
     public ResponseEntity<?> deleteAll(@RequestBody List<Animal> animals){
         for(Animal animal : animals) {
             Long id = animal.getId();
