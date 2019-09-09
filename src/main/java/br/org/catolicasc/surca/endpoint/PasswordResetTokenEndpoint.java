@@ -73,7 +73,7 @@ public class PasswordResetTokenEndpoint {
         Random generator = new Random();
         int number;
         for(int i = 0; i < 6; i++){
-                number = generator.nextInt(9);
+                number = generator.nextInt(10);
                 token.append(number);
         }
         return token.toString();
