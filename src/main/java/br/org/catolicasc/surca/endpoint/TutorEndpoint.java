@@ -75,13 +75,13 @@ public class TutorEndpoint {
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/veterinario/tutor/criadoPor/{createdBy}")
+    @GetMapping(path = "/admin/tutor/criadoPor/{createdBy}")
     public ResponseEntity<?> getTutorCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
         Page<Tutor> tutors =  tutorDao.findByCreatedByStartingWith(pageable, name);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/veterinario/tutor/modificadoPor/{lastModifiedBy}")
+    @GetMapping(path = "/admin/tutor/modificadoPor/{lastModifiedBy}")
     public ResponseEntity<?> getTutorLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
         Page<Tutor> tutors =  tutorDao.findByLastModifiedByStartingWith(pageable, name);
         return new ResponseEntity<>(tutors, HttpStatus.OK);

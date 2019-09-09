@@ -42,7 +42,7 @@ public class AnimalEndpoint {
         return new ResponseEntity<>(animal, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/animal/{microchipNumber}")
+    @GetMapping(path = "/user/animal/numeroMicrochip/{microchipNumber}")
     public ResponseEntity<?> getAnimalByMicrochipNumber(@PathVariable("microchipNumber")String microchipNumber){
         Animal animal =  animalDao.findByMicrochipNumber(microchipNumber);
         return new ResponseEntity<>(animal, HttpStatus.OK);
@@ -112,6 +112,18 @@ public class AnimalEndpoint {
                                                   @PathVariable("mes") int month, @PathVariable("dia") int day, Pageable pageable){
         Page<Animal> animalModels =  animalDao.findByBirthDate(pageable, age, month, day);
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/animal/criadoPor/{createdBy}")
+    public ResponseEntity<?> getAnimalCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<Animal> animals =  animalDao.findByCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(animals, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/animal/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getAnimalLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<Animal> animals =  animalDao.findByLastModifiedByStartingWith(pageable, name);
+        return new ResponseEntity<>(animals, HttpStatus.OK);
     }
 
     @PostMapping(path = "/veterinario/animal")

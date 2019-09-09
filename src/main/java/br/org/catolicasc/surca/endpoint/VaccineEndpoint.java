@@ -46,6 +46,18 @@ public class VaccineEndpoint {
         return new ResponseEntity<>(vaccines, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/admin/vacina/criadoPor/{createdBy}")
+    public ResponseEntity<?> getVaccineCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
+        Page<Vaccine> vaccines =  vaccineDao.findByCreatedByStartingWith(pageable, name);
+        return new ResponseEntity<>(vaccines, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/vacina/modificadoPor/{lastModifiedBy}")
+    public ResponseEntity<?> getVaccineLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
+        Page<Vaccine> vaccines =  vaccineDao.findByLastModifiedByStartingWith(pageable, name);
+        return new ResponseEntity<>(vaccines, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/veterinario/vacinas")
     public ResponseEntity<?> save(@RequestBody Vaccine vaccine){
         return new ResponseEntity<>(vaccineDao.save(vaccine), HttpStatus.OK);
