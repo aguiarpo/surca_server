@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Indexed;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -54,6 +55,7 @@ public class Animal extends Auditable{
     private String comments;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @Valid
     private Tutor tutor;
 
     @ManyToOne

@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -62,5 +63,6 @@ public class Tutor extends Auditable{
 
     @OneToMany(mappedBy = "tutor")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Valid
     private List<Animal> animals;
 }
