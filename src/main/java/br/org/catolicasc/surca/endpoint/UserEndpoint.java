@@ -12,6 +12,11 @@ import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.UriTemplate;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -19,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -26,6 +32,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("v1")
@@ -45,8 +53,10 @@ public class UserEndpoint {
     }
 
     @GetMapping(path = "/admin/usuario")
-    public ResponseEntity<?> listAll(Pageable pageable){
-        return new ResponseEntity<>(userDao.findAll(pageable), HttpStatus.OK);
+    public ResponseEntity<?> listAll(Pageable pageable, PagedResourcesAssembler assembler){
+        Page<User> users = userDao.findAll(pageable);
+        users.forEach(user -> createLinks(user, "self"));
+        return new ResponseEntity<>(creteLinkWithPageAndSort(users, pageable, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/{id}")
@@ -176,7 +186,7 @@ public class UserEndpoint {
 
     @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
-        Vet vet = vetDao.findByUserId(id);
+        Vet vet = vetDao.findByUserCode(id);
         if(vet == null){
             userDao.deleteById(id);
         }
@@ -189,9 +199,9 @@ public class UserEndpoint {
     @DeleteMapping(path = "/admin/usuario")
     public ResponseEntity<?> deleteAll(@RequestBody List<User> users){
         for(User user : users){
-            Vet vet = vetDao.findByUserId(user.getId());
+            Vet vet = vetDao.findByUserCode(user.getCode());
             if(vet == null)
-                userDao.deleteById(user.getId());
+                userDao.deleteById(user.getCode());
             else {
                 deleteVetAndAnimals(vet);
             }
@@ -205,7 +215,7 @@ public class UserEndpoint {
         User userSave = null;
         if(email != null){
             User findUser = userDao.findByEmailWithReturnPassword(email);
-            user.setId(findUser.getId());
+            user.setCode(findUser.getCode());
             user.setLevelsOfAccess(findUser.getLevelsOfAccess());
             user.setBcryptPassword();
             userSave = userDao.save(user);
@@ -229,9 +239,43 @@ public class UserEndpoint {
     }
 
     private void deleteVetAndAnimals(Vet vet){
-        Long idVet = vet.getId();
+        Long idVet = vet.getCode();
         List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
         animalDao.deleteAll(animals);
-        vetDao.deleteById(vet.getId());
+        vetDao.deleteById(vet.getCode());
+    }
+
+    private PagedResources<User> creteLinkWithPageAndSort(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
+        ControllerLinkBuilder ctrlBldr =
+                linkTo(methodOn(UserEndpoint.class).listAll(pageable,
+                        assembler));
+        UriComponentsBuilder builder = ctrlBldr.toUriComponentsBuilder();
+        PagedResources<User> resources = assembler.toResource(users);
+        resources.removeLinks();
+
+        int pageNumber = users.getPageable().getPageNumber();
+
+        if(pageNumber > 0){
+
+            builder.replaceQueryParam("page", pageNumber - 1);
+
+            Link selfLinkBefore =
+                    new Link(new UriTemplate(builder.build().toString()), "usersBefore");
+            resources.add(selfLinkBefore);
+        }
+        if(pageNumber <  users.getTotalPages() -1){
+            builder.replaceQueryParam("page", pageNumber + 1);
+
+            Link selfLinkAfter =
+                    new Link(new UriTemplate(builder.build().toString()), "usersAfter");
+
+            resources.add(selfLinkAfter);
+        }
+        return resources;
+    }
+
+    private void createLinks(User user, String rel ){
+        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode())).withRel(rel);
+        user.add(ctrlBldr);
     }
 }
