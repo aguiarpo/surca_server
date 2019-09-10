@@ -60,6 +60,10 @@ public class PasswordResetTokenEndpoint {
             String password = user.getPassword();
             passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(id, token);
             if(passwordResetToken != null){
+                LocalDateTime today = LocalDateTime.now();
+                if(passwordResetToken.getExpiryDate().isBefore(today)){
+                    throw new ResourceNotFoundException("Código expirou");
+                }
                 user.setPassword(password);
                 userDao.save(user);
             }else{
