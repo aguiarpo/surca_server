@@ -2,6 +2,7 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.email.EmailMessage;
 import br.org.catolicasc.surca.email.Mailer;
+import br.org.catolicasc.surca.error.ResourceNotFoundException;
 import br.org.catolicasc.surca.model.PasswordResetToken;
 import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.repository.PasswordResetTokenRepository;
@@ -32,10 +33,12 @@ public class PasswordResetTokenEndpoint {
 
     @GetMapping(path = "/login/recuperarSenha/{token}")
     public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("token") String token){
-        PasswordResetToken passwordResetToken = null;
+        PasswordResetToken passwordResetToken;
         if(user.getEmail() != null){
             user = userDao.findByEmail(user.getEmail());
             passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(user.getId(), token);
+        }else{
+            throw new ResourceNotFoundException("Email não pode ser nulo");
         }
         return new ResponseEntity<>(passwordResetToken, HttpStatus.OK);
     }
@@ -43,19 +46,20 @@ public class PasswordResetTokenEndpoint {
     @PutMapping(path = "/login/recuperarSenha/{id}/{token}")
     public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("id") Long id, @PathVariable("token") String token){
         PasswordResetToken passwordResetToken;
-            Optional<User> findUser = userDao.findById(id);
-            if(findUser.isPresent() && user.getEmail() != null && user.getPassword() != null){
-                user.setBcryptPassword();
-                String password = user.getPassword();
-                user = userDao.findByEmail(user.getEmail());
-                if(id.equals(user.getId())){
-                    passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(id, token);
-                    if(passwordResetToken != null){
-                        user.setPassword(password);
-                        userDao.save(user);
-                    }
-                }
+        Optional<User> findUser = userDao.findById(id);
+        if(findUser.isPresent() && user.getPassword() != null){
+            user.setBcryptPassword();
+            String password = user.getPassword();
+            passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(id, token);
+            if(passwordResetToken != null){
+                user.setPassword(password);
+                userDao.save(user);
+            }else{
+                throw new ResourceNotFoundException("Código incorreto");
             }
+        }else{
+                throw new ResourceNotFoundException("Senha não pode ser nula");
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
