@@ -55,7 +55,7 @@ public class UserEndpoint {
     @GetMapping(path = "/admin/usuario")
     public ResponseEntity<?> listAll(Pageable pageable, PagedResourcesAssembler assembler){
         Page<User> users = userDao.findAll(pageable);
-        users.forEach(user -> createLinks(user, "self"));
+        users.forEach(user -> createLinksById(user, "self"));
         return new ResponseEntity<>(creteLinkWithPageAndSort(users, pageable, assembler), HttpStatus.OK);
     }
 
@@ -274,7 +274,7 @@ public class UserEndpoint {
         return resources;
     }
 
-    private void createLinks(User user, String rel ){
+    private void createLinksById(User user, String rel ){
         Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode())).withRel(rel);
         user.add(ctrlBldr);
     }
