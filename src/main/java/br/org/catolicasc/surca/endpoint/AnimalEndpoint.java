@@ -154,7 +154,7 @@ public class AnimalEndpoint {
     @DeleteMapping(path = "/veterinario/animal")
     public ResponseEntity<?> deleteAll(@RequestBody List<Animal> animals){
         for(Animal animal : animals) {
-            Long id = animal.getId();
+            Long id = animal.getCode();
             Long tutorId = animalDao.findIdByIdTutor(id);
             animalDao.deleteById(id);
             if(animalDao.findByTutorWithAnimal(tutorId) == 0){
@@ -170,7 +170,8 @@ public class AnimalEndpoint {
         animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
         animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
-        animal.getTutor().setId(tutor.getId());
+        animal.getTutor().setCode(tutor.getCode()
+        );
         return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
     }
 

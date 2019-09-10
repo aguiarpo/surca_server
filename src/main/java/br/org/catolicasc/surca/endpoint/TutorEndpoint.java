@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,7 +109,7 @@ public class TutorEndpoint {
 
     @DeleteMapping(path = "/veterinario/tutor/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
-        List<Animal> animals = animalDao.findByTutorId(id);
+        List<Animal> animals = animalDao.findByTutorCode(id);
         if(!animals.isEmpty())
             animalDao.deleteAll(animals);
         tutorDao.deleteById(id);
@@ -120,8 +119,8 @@ public class TutorEndpoint {
     @DeleteMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> deleteAll(@RequestBody List<Tutor> tutors){
         for(Tutor tutor : tutors) {
-            Long id = tutor.getId();
-            List<Animal> animals = animalDao.findByTutorId(id);
+            Long id = tutor.getCode();
+            List<Animal> animals = animalDao.findByTutorCode(id);
             if(!animals.isEmpty())
                 animalDao.deleteAll(animals);
             tutorDao.deleteById(id);

@@ -36,7 +36,7 @@ public class PasswordResetTokenEndpoint {
         PasswordResetToken passwordResetToken;
         if(user.getEmail() != null){
             user = userDao.findByEmail(user.getEmail());
-            passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(user.getId(), token);
+            passwordResetToken = passwordResetTokenDao.findByUserCodeAndToken(user.getCode(), token);
             LocalDateTime today = LocalDateTime.now();
             if(passwordResetToken == null){
                 throw new ResourceNotFoundException("Código incorreto");
@@ -58,7 +58,7 @@ public class PasswordResetTokenEndpoint {
         if(findUser.isPresent() && user.getPassword() != null){
             user.setBcryptPassword();
             String password = user.getPassword();
-            passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(id, token);
+            passwordResetToken = passwordResetTokenDao.findByUserCodeAndToken(id, token);
             if(passwordResetToken != null){
                 LocalDateTime today = LocalDateTime.now();
                 if(passwordResetToken.getExpiryDate().isBefore(today)){

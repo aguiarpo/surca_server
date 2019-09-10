@@ -27,7 +27,8 @@ import javax.validation.constraints.Size;
 public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    private Long id;
+    @Column(name = "id")
+    private Long code;
 
     @NotNull
     private String name;

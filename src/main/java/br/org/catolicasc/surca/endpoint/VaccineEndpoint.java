@@ -1,8 +1,6 @@
 package br.org.catolicasc.surca.endpoint;
 
-import br.org.catolicasc.surca.model.Animal;
 import br.org.catolicasc.surca.model.Vaccine;
-import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

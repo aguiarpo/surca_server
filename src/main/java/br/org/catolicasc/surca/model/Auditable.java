@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-class Auditable {
+class Auditable  extends ResourceSupport {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @CreatedDate
     @Column(nullable = false, updatable = false)

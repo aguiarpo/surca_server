@@ -20,7 +20,8 @@ import java.util.List;
 public class Vet{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vet_seq")
-    private Long id;
+    @Column(name = "id")
+    private Long code;
     @NotNull
     @Size(max = 20)
     private String crmv;

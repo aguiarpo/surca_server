@@ -19,7 +19,8 @@ import java.util.List;
 public class Vaccine extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccine_seq")
-    private Long id;
+    @Column(name = "id")
+    private Long code;
     @NotEmpty
     private String name;
 

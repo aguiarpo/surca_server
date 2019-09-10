@@ -121,7 +121,7 @@ public class VetEndpoint {
     @DeleteMapping(path = "/admin/veterinario")
     public ResponseEntity<?> deleteAll(@RequestBody List<Vet> vets){
         for(Vet vet : vets) {
-            Long id = vet.getId();
+            Long id = vet.getCode();
             List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(id, id);
             animalDao.deleteAll(animals);
             vetDao.deleteById(id);

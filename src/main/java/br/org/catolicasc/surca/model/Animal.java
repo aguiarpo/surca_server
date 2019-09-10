@@ -29,7 +29,8 @@ import java.util.List;
 public class Animal extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
-    private Long id;
+    @Column(name = "id")
+    private Long code;
     @NotNull
     @Size(max = 20)
     private String microchipNumber;

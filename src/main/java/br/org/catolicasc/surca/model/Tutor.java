@@ -27,7 +27,8 @@ import java.util.List;
 public class Tutor extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tutor_seq")
-    private Long id;
+    @Column(name = "id")
+    private Long code;
     @CPF
     @NotEmpty
     @Size(min = 14, max = 14)

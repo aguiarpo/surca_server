@@ -11,7 +11,7 @@ public interface VetRepository extends PagingAndSortingRepository<Vet, Long> {
     Page<Vet> findByUserName(Pageable pageable, String name);
     Page<Vet> findByCrmv(Pageable pageable, String crmv);
     Vet findByCrmv(String crmv);
-    Vet findByUserId(Long Id);
+    Vet findByUserCode(Long Id);
     Page<Vet> findByUserNameStartingWith(Pageable pageable, String name);
     Page<Vet> findByUserEmail(Pageable pageable, String crmv);
     Page<Vet> findByUserCreatedByStartingWith(Pageable pageable, String name);

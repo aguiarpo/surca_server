@@ -12,7 +12,7 @@ public interface AnimalRepository extends AuditableRepository<Animal, Long> {
     Page<Animal> findByName(Pageable pageable, String name);
     Page<Animal> findBySpecies(Pageable pageable, String species);
     Page<Animal> findByBreed(Pageable pageable, String breed);
-    List<Animal> findByTutorId(Long idTutor);
+    List<Animal> findByTutorCode(Long idTutor);
     Animal findByMicrochipNumber(String microchipNumber);
     @Query(value = "SELECT * FROM animal where vet_microchip_id = ?1 or castrator_id = ?2", nativeQuery = true)
     List<Animal> findByVetMicrochipIdOrCastratorId(Long idVet, Long idCastrator);
