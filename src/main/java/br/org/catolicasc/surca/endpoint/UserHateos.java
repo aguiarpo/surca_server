@@ -18,14 +18,14 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 class UserHateos {
 
-    static PagedResources<User> creteLinksListAll(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
+    static PagedResources<User> createLinksListAll(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
         ControllerLinkBuilder ctrlBldr =
                 linkTo(methodOn(UserEndpoint.class).listAll(pageable,
                         assembler));
         return constructLinks(ctrlBldr, users, assembler);
     }
 
-    static PagedResources<User> creteLinksGetUserByCityLike(String city, Page<User> users, Pageable pageable,
+    static PagedResources<User> createLinksGetUserByCityLike(String city, Page<User> users, Pageable pageable,
                                                             PagedResourcesAssembler assembler){
         ControllerLinkBuilder ctrlBldr =
                 linkTo(methodOn(UserEndpoint.class).getUserByCityLike(city, pageable,
