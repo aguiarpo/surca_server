@@ -32,11 +32,19 @@ public class PasswordResetTokenEndpoint {
     }
 
     @GetMapping(path = "/login/recuperarSenha/{token}")
-    public ResponseEntity<?> resetPassword(@RequestBody User user, @PathVariable("token") String token){
+    public ResponseEntity<?> getToken(@RequestBody User user, @PathVariable("token") String token){
         PasswordResetToken passwordResetToken;
         if(user.getEmail() != null){
             user = userDao.findByEmail(user.getEmail());
             passwordResetToken = passwordResetTokenDao.findByUserIdAndToken(user.getId(), token);
+            LocalDateTime today = LocalDateTime.now();
+            if(passwordResetToken == null){
+                throw new ResourceNotFoundException("Código incorreto");
+            }else{
+                if(passwordResetToken.getExpiryDate().isBefore(today)){
+                    throw new ResourceNotFoundException("Código expirou");
+                }
+            }
         }else{
             throw new ResourceNotFoundException("Email não pode ser nulo");
         }
