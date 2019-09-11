@@ -166,7 +166,7 @@ public class UserEndpoint{
 
     @DeleteMapping(path = "/user/usuario")
     public ResponseEntity<?> deleteLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User userForDelete){
-            User user = userDao.findByEmailWithReturnPassword(auth.getName());
+            User user = userDao.findByEmail(auth.getName());
             if (user != null && BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())) {
                 if(user.getLevelsOfAccess() == LevelsOfAccess.VETERINARIO){
                     user.setStatus(Status.INVISIBLE);
@@ -210,7 +210,7 @@ public class UserEndpoint{
         String email = auth.getName();
         User userSave = null;
         if(email != null){
-            User findUser = userDao.findByEmailWithReturnPassword(email);
+            User findUser = userDao.findByEmail(email);
             user.setCode(findUser.getCode());
             user.setLevelsOfAccess(findUser.getLevelsOfAccess());
             user.setBcryptPassword();

@@ -21,6 +21,4 @@ public interface UserRepository extends AuditableRepository<User, Long> {
     @Transactional
     void deleteByEmailAndPassword(String email, String password);
     Page<User> findByLevelsOfAccessAndStatus(LevelsOfAccess levelsOfAccess, Status status, Pageable pageable);
-    @Query(value = "select * from `user` where email = ?1", nativeQuery = true)
-    User findByEmailWithReturnPassword(String email);
 }
