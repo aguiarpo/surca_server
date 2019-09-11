@@ -58,6 +58,8 @@ public class User extends Auditable{
     private LevelsOfAccess levelsOfAccess;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(updatable = false)
     private Status status;
 
     @OneToOne(mappedBy = "user")

@@ -63,6 +63,8 @@ public class Tutor extends Auditable{
     private String telephone2;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(updatable = false)
     private Status status;
 
     @OneToMany(mappedBy = "tutor")

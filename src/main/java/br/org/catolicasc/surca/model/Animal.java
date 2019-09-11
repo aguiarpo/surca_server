@@ -59,6 +59,8 @@ public class Animal extends Auditable{
     private Tutor tutor;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(updatable = false)
     private Status status;
 
     @ManyToOne
