@@ -23,27 +23,6 @@ public interface AnimalRepository extends AuditableRepository<Animal, Long> {
     @Query(value = "SELECT tutor_id FROM animal WHERE id = :id", nativeQuery = true)
     Long findIdByIdTutor(@Param("id") Long id);
 
-    @Query(value = "SELECT * FROM animal WHERE YEAR(date_microchip) like concat('%', :age) " +
-            "AND MONTH(date_microchip)=:month AND DAY(date_microchip)=:day" , nativeQuery = true)
-    Page<Animal> findByDateMicrochip(Pageable pageable, @Param("age") int age,
-                                          @Param("month") int month, @Param("day") int day);
-
-    @Query(value = "SELECT * FROM animal WHERE YEAR(date_microchip) like concat('%', :age)" , nativeQuery = true)
-    Page<Animal> findDateMicrochipByAge(Pageable pageable, @Param("age") int age);
-
-    @Query(value = "SELECT * FROM animal WHERE YEAR(date_microchip) like concat('%', :age) AND MONTH(date_microchip)=:month" , nativeQuery = true)
-    Page<Animal> findDateMicrochipByMouth(Pageable pageable,@Param("age") int age, @Param("month") int month);
-
     Page<Animal> findByNameStartingWith(Pageable pageable, String name);
 
-    @Query(value = "SELECT * FROM animal WHERE YEAR(birth_date) like concat('%', :age) " +
-            "AND MONTH(birth_date)=:month AND DAY(birth_date)=:day" , nativeQuery = true)
-    Page<Animal> findByBirthDate(Pageable pageable, @Param("age") int age,
-                                      @Param("month") int month, @Param("day") int day);
-
-    @Query(value = "SELECT * FROM animal WHERE YEAR(birth_date) like concat('%', :age)" , nativeQuery = true)
-    Page<Animal> findBirthDateByAge(Pageable pageable, @Param("age") int age);
-
-    @Query(value = "SELECT * FROM animal WHERE YEAR(birth_date) like concat('%', :age) AND MONTH(birth_date)=:month" , nativeQuery = true)
-    Page<Animal> findBirthDateByMouth(Pageable pageable, @Param("age") int age, @Param("month") int month);
 }

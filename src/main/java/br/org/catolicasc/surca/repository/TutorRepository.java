@@ -10,6 +10,4 @@ public interface TutorRepository extends AuditableRepository<Tutor, Long> {
     Page<Tutor> findByCpf(Pageable pageable, String cpf);
     Tutor findByCpf(String cpf);
     Page<Tutor> findByRg(Pageable pageable, String rg);
-    Page<Tutor> findByCityStartingWith(Pageable pageable, String city);
-    Page<Tutor> findByState(Pageable pageable, String state);
 }
