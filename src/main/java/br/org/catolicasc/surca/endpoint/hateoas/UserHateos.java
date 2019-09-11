@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
 
@@ -17,21 +18,26 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class UserHateos {
 
     public static void createLinkById(User user, PagedResourcesAssembler assembler){
-        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode(), assembler)).withRel("self");
+        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode(), assembler)).withSelfRel();
         user.add(ctrlBldr);
     }
 
-    public static void createLink(Optional<User> user, String rel, PagedResourcesAssembler assembler){
+    public static void createLink(Optional<User> user, PagedResourcesAssembler assembler){
         Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).listAll(PageRequest.of(0, 10),
                 assembler))
-                .withRel(rel);
+                .withRel("users");
         user.get().add(ctrlBldr);
     }
 
-    public static void createLink(User user, String rel, PagedResourcesAssembler assembler){
+    public static void createLink(User user, PagedResourcesAssembler assembler){
         Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).listAll(PageRequest.of(0, 10),
                 assembler))
-                .withRel(rel);
+                .withRel("users");
+        user.add(ctrlBldr);
+    }
+
+    public static void createLink(User user, Authentication auth){
+        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserEmailAuth(auth)).withSelfRel();
         user.add(ctrlBldr);
     }
 
@@ -43,7 +49,7 @@ public class UserHateos {
         user.add(createLinkFindByAll(assembler));
     }
 
-    public static PagedResources<User> createLinkFindBy(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
+    public static PagedResources<User> createLinkFindBy(Page<User> users, PagedResourcesAssembler assembler){
         PagedResources<User> resources = assembler.toResource(users);
         resources.add(createLinkFindByName(assembler));
         resources.add(createLinkFindByNameLike(assembler));

@@ -51,14 +51,14 @@ public class UserEndpoint{
         Page<User> users = userDao.findAll(pageable);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
-        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
+        return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id, PagedResourcesAssembler assembler){
         Optional<User> user =  userDao.findById(id);
         if(user.isPresent())
-            createLink(user, "users", assembler);
+            createLink(user, assembler);
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
 
@@ -68,7 +68,7 @@ public class UserEndpoint{
         Page<User> users= userDao.findByName(pageable, name);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
-        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
+        return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/nome/like/{nome}")
@@ -77,7 +77,7 @@ public class UserEndpoint{
         Page<User> users = userDao.findByNameStartingWith(pageable, name);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
-        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
+        return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/email/{email}")
@@ -92,12 +92,13 @@ public class UserEndpoint{
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/usuario/email")
-    public ResponseEntity<?> getUserEmail(@AuthenticationPrincipal Authentication auth){
+    @GetMapping(path = "/user/usuario")
+    public ResponseEntity<?> getUserEmailAuth(@AuthenticationPrincipal Authentication auth){
         String email = auth.getName();
         User user = null;
         if(email != null){
             user = userDao.findByEmail(email);
+            createLink(user, auth);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -130,7 +131,7 @@ public class UserEndpoint{
         }
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
-        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
+        return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/usuario")
@@ -191,7 +192,7 @@ public class UserEndpoint{
     }
 
     @PutMapping(path = "/user/usuario")
-    public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @Valid @RequestBody User user){
+    public ResponseEntity<?> updateLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User user){
         String email = auth.getName();
         User userSave = null;
         if(email != null){
@@ -200,6 +201,7 @@ public class UserEndpoint{
             user.setLevelsOfAccess(findUser.getLevelsOfAccess());
             user.setBcryptPassword();
             userSave = userDao.save(user);
+            createLink(user, auth);
         }
         return new ResponseEntity<>(userSave, HttpStatus.OK);
     }
