@@ -1,5 +1,6 @@
-package br.org.catolicasc.surca.endpoint;
+package br.org.catolicasc.surca.endpoint.hateoas;
 
+import br.org.catolicasc.surca.endpoint.UserEndpoint;
 import br.org.catolicasc.surca.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,19 +17,11 @@ import java.util.Optional;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-class UserHateos {
+public class UserHateos {
 
-    static PagedResources<User> createLinksListAll(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
+    public static PagedResources<User> createLinksListAll(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
         ControllerLinkBuilder ctrlBldr =
-                linkTo(methodOn(UserEndpoint.class).listAll(pageable,
-                        assembler));
-        return constructLinks(ctrlBldr, users, assembler);
-    }
-
-    static PagedResources<User> createLinksGetUserByCityLike(String city, Page<User> users, Pageable pageable,
-                                                            PagedResourcesAssembler assembler){
-        ControllerLinkBuilder ctrlBldr =
-                linkTo(methodOn(UserEndpoint.class).getUserByCityLike(city, pageable,
+                ControllerLinkBuilder.linkTo(methodOn(UserEndpoint.class).listAll(pageable,
                         assembler));
         return constructLinks(ctrlBldr, users, assembler);
     }
@@ -60,12 +53,12 @@ class UserHateos {
         return resources;
     }
 
-    static void createLinkById(User user, String rel, PagedResourcesAssembler assembler){
+    public static void createLinkById(User user, String rel, PagedResourcesAssembler assembler){
         Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode(), assembler)).withRel(rel);
         user.add(ctrlBldr);
     }
 
-    static void createLink(Optional<User> user, String rel, PagedResourcesAssembler assembler){
+    public static void createLink(Optional<User> user, String rel, PagedResourcesAssembler assembler){
         Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).listAll(PageRequest.of(0, 10),
                 assembler))
                 .withRel(rel);

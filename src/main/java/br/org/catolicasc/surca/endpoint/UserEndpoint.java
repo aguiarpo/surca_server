@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
-import static br.org.catolicasc.surca.endpoint.UserHateos.*;
+import static br.org.catolicasc.surca.endpoint.hateoas.UserHateos.*;
 
 @RestController
 @RequestMapping("v1")
