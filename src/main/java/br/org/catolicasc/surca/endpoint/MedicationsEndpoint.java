@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -45,20 +44,8 @@ public class MedicationsEndpoint {
         return new ResponseEntity<>(medications, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin/medicacao/criadoPor/{createdBy}")
-    public ResponseEntity<?> getMedicationCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
-        Page<Medications> medications =  medicationsDao.findByCreatedByStartingWith(pageable, name);
-        return new ResponseEntity<>(medications, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/medicacao/modificadoPor/{lastModifiedBy}")
-    public ResponseEntity<?> getMedicationLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
-        Page<Medications> medications =  medicationsDao.findByLastModifiedByStartingWith(pageable, name);
-        return new ResponseEntity<>(medications, HttpStatus.OK);
-    }
-
     @PostMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> save(@Valid @RequestBody Medications medications){
+    public ResponseEntity<?> save(@RequestBody Medications medications){
         return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
     }
 
@@ -77,7 +64,7 @@ public class MedicationsEndpoint {
     }
 
     @PutMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> update(@Valid @RequestBody Medications medications){
+    public ResponseEntity<?> update(@RequestBody Medications medications){
         return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
     }
 }

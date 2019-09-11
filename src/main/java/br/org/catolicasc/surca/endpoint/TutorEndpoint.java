@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,32 +67,8 @@ public class TutorEndpoint {
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/tutor/cidade/like/{city}")
-    public ResponseEntity<?> getTutorByCity(@PathVariable("city")String city, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByCityStartingWith(pageable, city);
-        return new ResponseEntity<>(tutors, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/tutor/estado/{state}")
-    public ResponseEntity<?> getTutorByState(@PathVariable("state")String state, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByState(pageable, state);
-        return new ResponseEntity<>(tutors, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/tutor/criadoPor/{createdBy}")
-    public ResponseEntity<?> getTutorCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByCreatedByStartingWith(pageable, name);
-        return new ResponseEntity<>(tutors, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/tutor/modificadoPor/{lastModifiedBy}")
-    public ResponseEntity<?> getTutorLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByLastModifiedByStartingWith(pageable, name);
-        return new ResponseEntity<>(tutors, HttpStatus.OK);
-    }
-
     @PostMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> save(@Valid @RequestBody Tutor tutor){
+    public ResponseEntity<?> save(@RequestBody Tutor tutor){
         List<Animal> animals = tutor.getAnimals();
         Tutor savedTutor = tutorDao.save(tutor);
         if(animals != null) {
@@ -129,7 +104,7 @@ public class TutorEndpoint {
     }
 
     @PutMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> update(@Valid @RequestBody Tutor tutor){
+    public ResponseEntity<?> update(@RequestBody Tutor tutor){
         return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
     }
 

@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,62 +72,8 @@ public class AnimalEndpoint {
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/user/animal/dataMicrochip/{ano}")
-    public ResponseEntity<?> getAnimalByDateMicrochipAge(@PathVariable("ano") int
-                                                                 age, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findDateMicrochipByAge(pageable, age);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/animal/dataMicrochip/{ano}/{mes}")
-    public ResponseEntity<?> getAnimalByDateMicrochipMouth(@PathVariable("ano") int age, @PathVariable("mes") int
-            month, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findDateMicrochipByMouth(pageable, age, month);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/animal/dataMicrochip/{ano}/{mes}/{dia}")
-    public ResponseEntity<?> getAnimalByDateMicrochip(@PathVariable("ano") int age,
-                                                      @PathVariable("mes") int month, @PathVariable("dia") int day, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findByDateMicrochip(pageable, age, month, day);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/animal/dataNascimento/{ano}")
-    public ResponseEntity<?> getAnimalByBirthDateAge(@PathVariable("ano") int
-                                                             age, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findBirthDateByAge(pageable, age);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/animal/dataNascimento/{ano}/{mes}")
-    public ResponseEntity<?> getAnimalByBirthDateMouth(@PathVariable("ano") int age, @PathVariable("mes") int
-            month, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findBirthDateByMouth(pageable, age, month);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/animal/dataNascimento/{ano}/{mes}/{dia}")
-    public ResponseEntity<?> getAnimalByBirthDate(@PathVariable("ano") int age,
-                                                  @PathVariable("mes") int month, @PathVariable("dia") int day, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findByBirthDate(pageable, age, month, day);
-        return new ResponseEntity<>(animalModels, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/animal/criadoPor/{createdBy}")
-    public ResponseEntity<?> getAnimalCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
-        Page<Animal> animals =  animalDao.findByCreatedByStartingWith(pageable, name);
-        return new ResponseEntity<>(animals, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/animal/modificadoPor/{lastModifiedBy}")
-    public ResponseEntity<?> getAnimalLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
-        Page<Animal> animals =  animalDao.findByLastModifiedByStartingWith(pageable, name);
-        return new ResponseEntity<>(animals, HttpStatus.OK);
-    }
-
     @PostMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> save(@Valid @RequestBody Animal animal){
+    public ResponseEntity<?> save(@RequestBody Animal animal){
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
         animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
         animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
@@ -166,7 +111,7 @@ public class AnimalEndpoint {
 
 
     @PutMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> update(@Valid @RequestBody Animal animal){
+    public ResponseEntity<?> update(@RequestBody Animal animal){
         animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
         animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
         Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());

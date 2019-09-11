@@ -27,7 +27,6 @@ public class Vet{
     private String crmv;
     @OneToOne(cascade = CascadeType.ALL)
     @NotNull
-    @Valid
     private User user;
 
     @OneToMany(mappedBy = "vetMicrochip")

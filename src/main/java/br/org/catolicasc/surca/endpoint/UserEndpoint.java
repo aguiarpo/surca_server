@@ -60,25 +60,6 @@ public class UserEndpoint{
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin/usuario/cidade/like/{city}")
-    public ResponseEntity<?> getUserByCityLike(@PathVariable("city") String city, Pageable pageable,
-                                               PagedResourcesAssembler assembler){
-        Page<User> users =  userDao.findByCityStartingWith(pageable, city);
-        return new ResponseEntity<>(createLinksGetUserByCityLike(city, users, pageable, assembler), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/usuario/cidade/{city}")
-    public ResponseEntity<?> getUserByCity(@PathVariable("city") String city, Pageable pageable){
-        Page<User> user =  userDao.findByCity(pageable, city);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/usuario/estado/{state}")
-    public ResponseEntity<?> getUserByState(@PathVariable("state") String state, Pageable pageable){
-        Page<User> user =  userDao.findByState(pageable, state);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
     @GetMapping(path = "/admin/usuario/nome/{nome}")
     public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable){
         Page<User> users= userDao.findByName(pageable, name);
@@ -135,27 +116,15 @@ public class UserEndpoint{
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin/usuario/criadoPor/{createdBy}")
-    public ResponseEntity<?> getUserCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
-        Page<User> users =  userDao.findByCreatedByStartingWith(pageable, name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/usuario/modificadoPor/{lastModifiedBy}")
-    public ResponseEntity<?> getUserLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
-        Page<User> users =  userDao.findByLastModifiedByStartingWith(pageable, name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
     @PostMapping(path = "/login/usuario")
-    public ResponseEntity<?> saveLogin(@Valid @RequestBody User user){
+    public ResponseEntity<?> saveLogin(@RequestBody User user){
         user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/usuario")
-    public ResponseEntity<?> save(@Valid @RequestBody User user){
+    public ResponseEntity<?> save(@RequestBody User user){
         if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
             user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         }
@@ -220,7 +189,7 @@ public class UserEndpoint{
     }
 
     @PutMapping(path = "/admin/usuario")
-    public ResponseEntity<?> update(@Valid @RequestBody User user){
+    public ResponseEntity<?> update(@RequestBody User user){
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }

@@ -56,7 +56,6 @@ public class Animal extends Auditable{
     private String comments;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @Valid
     private Tutor tutor;
 
     @Enumerated(EnumType.STRING)

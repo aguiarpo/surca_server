@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,32 +72,8 @@ public class VetEndpoint {
         return new ResponseEntity<>(vets, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin/veterinario/cidade/{city}")
-    public ResponseEntity<?> getVetByCityLike(@PathVariable("city") String city, Pageable pageable){
-        Page<Vet> vets =  vetDao.findByUserCityStartingWith(pageable, city);
-        return new ResponseEntity<>(vets, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/veterinario/estado/{state}")
-    public ResponseEntity<?> getVetByState(@PathVariable("state") String state, Pageable pageable){
-        Page<Vet> vets =  vetDao.findByUserState(pageable, state);
-        return new ResponseEntity<>(vets, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/veterinario/criadoPor/{createdBy}")
-    public ResponseEntity<?> getCreatedBy(@PathVariable("createdBy")String name, Pageable pageable){
-        Page<Vet> vets =  vetDao.findByUserCreatedByStartingWith(pageable, name);
-        return new ResponseEntity<>(vets, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/admin/veterinario/modificadoPor/{lastModifiedBy}")
-    public ResponseEntity<?> getLastModifiedBy(@PathVariable("lastModifiedBy")String name, Pageable pageable){
-        Page<Vet> vets =  vetDao.findByUserLastModifiedByStartingWith(pageable, name);
-        return new ResponseEntity<>(vets, HttpStatus.OK);
-    }
-
     @PostMapping(path = "/admin/veterinario")
-    public ResponseEntity<?> save(@Valid @RequestBody Vet vet){
+    public ResponseEntity<?> save(@RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         String password = getPassword();
         vet.getUser().setPassword(password);
@@ -130,7 +105,7 @@ public class VetEndpoint {
     }
 
     @PutMapping(path = "/admin/veterinario")
-    public ResponseEntity<?> update(@Valid @RequestBody Vet vet){
+    public ResponseEntity<?> update(@RequestBody Vet vet){
         vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
         vet.getUser().setBcryptPassword();
         return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
