@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -58,9 +59,9 @@ public class User extends Auditable{
     private LevelsOfAccess levelsOfAccess;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(updatable = false)
-    private Status status;
+    @NotNull
+    private Status status = Status.VISIBLE;
 
     @OneToOne(mappedBy = "user")
     @JsonIgnore

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "cp.user.designation",
+      "type": "java.lang.String",
+      "description": "Description for cp.user.designation."
+  }
+] }
