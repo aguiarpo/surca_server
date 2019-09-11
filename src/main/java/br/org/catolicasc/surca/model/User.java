@@ -36,7 +36,6 @@ public class User extends Auditable{
     @Email
     private String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 8)
     @NotEmpty
     private String password;
@@ -58,7 +57,6 @@ public class User extends Auditable{
     private LevelsOfAccess levelsOfAccess = LevelsOfAccess.USUARIO;
 
     @Enumerated(EnumType.STRING)
-    @Column(updatable = false)
     @NotNull
     private Status status = Status.VISIBLE;
 

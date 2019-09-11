@@ -1,5 +1,6 @@
 package br.org.catolicasc.surca.service;
 
+import br.org.catolicasc.surca.model.Status;
 import br.org.catolicasc.surca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,8 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         br.org.catolicasc.surca.model.User user = Optional.ofNullable(userRepository.findByEmail(email))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getStatus() == Status.INVISIBLE)
+           throw new UsernameNotFoundException("User not found");
         List<GrantedAuthority> authorityListAdmin = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_VETERINARIO", "ROLE_ADMIN");
         List<GrantedAuthority> authorityListVeterinario = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_VETERINARIO");
         List<GrantedAuthority> authorityListUser = AuthorityUtils.createAuthorityList("ROLE_USER");

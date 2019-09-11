@@ -2,11 +2,7 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.email.EmailMessage;
 import br.org.catolicasc.surca.email.Mailer;
-import br.org.catolicasc.surca.model.Animal;
-import br.org.catolicasc.surca.model.LevelsOfAccess;
-import br.org.catolicasc.surca.model.User;
-import br.org.catolicasc.surca.model.Vet;
-import br.org.catolicasc.surca.repository.AnimalRepository;
+import br.org.catolicasc.surca.model.*;
 import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,20 +30,18 @@ public class UserEndpoint{
 
     private UserRepository userDao;
     private VetRepository vetDao;
-    private AnimalRepository animalDao;
     private Mailer mailer;
 
     @Autowired
-    public UserEndpoint(UserRepository userDao, VetRepository vetDao, AnimalRepository animalDao, Mailer mailer) {
+    public UserEndpoint(UserRepository userDao, VetRepository vetDao, Mailer mailer) {
         this.userDao = userDao;
         this.vetDao = vetDao;
-        this.animalDao = animalDao;
         this.mailer = mailer;
     }
 
     @GetMapping(path = "/admin/usuario")
     public ResponseEntity<?> listAll(Pageable pageable, PagedResourcesAssembler assembler){
-        Page<User> users = userDao.findAll(pageable);
+        Page<User> users = userDao.findByStatus(pageable, Status.VISIBLE);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
         return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
@@ -65,7 +58,7 @@ public class UserEndpoint{
     @GetMapping(path = "/admin/usuario/nome/{nome}")
     public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable,
                                          PagedResourcesAssembler assembler){
-        Page<User> users= userDao.findByName(pageable, name);
+        Page<User> users= userDao.findByNameAndStatus(pageable, name, Status.VISIBLE);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
         return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
@@ -74,7 +67,7 @@ public class UserEndpoint{
     @GetMapping(path = "/admin/usuario/nome/like/{nome}")
     public ResponseEntity<?> getUserNameLike(@PathVariable("nome") String name, Pageable pageable,
                                              PagedResourcesAssembler assembler){
-        Page<User> users = userDao.findByNameStartingWith(pageable, name);
+        Page<User> users = userDao.findByNameStartingWithAndStatus(pageable, name, Status.VISIBLE);
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
         return new ResponseEntity<>(createLinkFindBy(users, assembler), HttpStatus.OK);
@@ -82,7 +75,7 @@ public class UserEndpoint{
 
     @GetMapping(path = "/admin/usuario/email/{email}")
     public ResponseEntity<?> getUserEmail(@PathVariable("email") String email, PagedResourcesAssembler assembler){
-        User user = userDao.findByEmail(email);
+        User user = userDao.findByEmailAndStatus(email, Status.VISIBLE);
         if(user == null){
             user = new User();
         }else {
@@ -97,7 +90,7 @@ public class UserEndpoint{
         String email = auth.getName();
         User user = null;
         if(email != null){
-            user = userDao.findByEmail(email);
+            user = userDao.findByEmailAndStatus(email, Status.VISIBLE);
             createLink(user, auth);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -113,21 +106,21 @@ public class UserEndpoint{
             case "USUÁRIO":
             case "USUARIO":
             case "USER":
-                users = userDao.findByLevelsOfAccess(LevelsOfAccess.USUARIO, pageable);
+                users = userDao.findByLevelsOfAccessAndStatus(LevelsOfAccess.USUARIO, Status.VISIBLE, pageable);
                 break;
             case "V":
             case "VETERINARIO":
             case "VETERINÁRIO":
             case "VET":
-                users = userDao.findByLevelsOfAccess(LevelsOfAccess.VETERINARIO, pageable);
+                users = userDao.findByLevelsOfAccessAndStatus(LevelsOfAccess.VETERINARIO, Status.VISIBLE, pageable);
                 break;
             case "A":
             case "ADMINISTRADOR":
             case "ADMIN":
-                users = userDao.findByLevelsOfAccess(LevelsOfAccess.ADMIN, pageable);
+                users = userDao.findByLevelsOfAccessAndStatus(LevelsOfAccess.ADMIN, Status.VISIBLE, pageable);
                 break;
             default:
-                users = userDao.findByLevelsOfAccess(null, pageable);
+                users = userDao.findByLevelsOfAccessAndStatus(null, Status.VISIBLE, pageable);
         }
         if(!users.isEmpty())
             users.forEach(user -> createLinkById(user, assembler));
@@ -136,34 +129,53 @@ public class UserEndpoint{
 
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
+        user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/usuario")
-    public ResponseEntity<?> save(@RequestBody User user){
-        if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
-            user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
-        }
+    public ResponseEntity<?> save(@RequestBody Vet vet){
+        Vet findVet = null;
+        User user = vet.getUser();
         String password = getPassword();
-        user.setPassword(password);
-        user.setBcryptPassword();
-        User userSave = userDao.save(user);
-        ArrayList<String> recipients = new ArrayList<>();
-        recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
-        sendEmail(recipients, password);
-        return new ResponseEntity<>(userSave, HttpStatus.OK);
+        if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO) && vet.getCrmv() != null){
+            findVet = vetDao.findByCrmv(vet.getCrmv());
+            if(findVet != null){
+                vet.setCode(findVet.getCode());
+                vet.getUser().setStatus(Status.VISIBLE);
+                vet.getUser().setPassword(findVet.getUser().getPassword());
+                vet.getUser().setCode(findVet.getUser().getCode());
+            }else{
+                vet.getUser().setPassword(password);
+                vet.getUser().setBcryptPassword();
+            }
+            vetDao.save(vet);
+        }else{
+            user.setPassword(password);
+            user.setBcryptPassword();
+            userDao.save(user);
+        }
+        if(findVet == null){
+            ArrayList<String> recipients = new ArrayList<>();
+            recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
+            sendEmail(recipients, password);
+        }
+        return new ResponseEntity<>(vet, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/user/usuario")
     public ResponseEntity<?> deleteLogin(@AuthenticationPrincipal Authentication auth, @RequestBody User userForDelete){
-        if(auth.getName().equals(userForDelete.getEmail())) {
-            User user = userDao.findByEmailWithReturnPassword(userForDelete.getEmail());
-            if (BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())) {
-                userDao.deleteByEmailAndPassword(user.getEmail(), user.getPassword());
+            User user = userDao.findByEmailWithReturnPassword(auth.getName());
+            if (user != null && BCrypt.checkpw(userForDelete.getPassword(), user.getPassword())) {
+                if(user.getLevelsOfAccess() == LevelsOfAccess.VETERINARIO){
+                    user.setStatus(Status.INVISIBLE);
+                    userDao.save(user);
+                }else{
+                    userDao.deleteByEmailAndPassword(user.getEmail(), user.getPassword());
+                }
             }
-        }
-        return new ResponseEntity<>(userDao.findByEmail(auth.getName()), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/usuario/{id}")
@@ -173,7 +185,8 @@ public class UserEndpoint{
             userDao.deleteById(id);
         }
         else{
-            deleteVetAndAnimals(vet);
+            vet.getUser().setStatus(Status.INVISIBLE);
+            userDao.save(vet.getUser());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -185,7 +198,8 @@ public class UserEndpoint{
             if(vet == null)
                 userDao.deleteById(user.getCode());
             else {
-                deleteVetAndAnimals(vet);
+                user.setStatus(Status.INVISIBLE);
+                userDao.save(user);
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -219,13 +233,6 @@ public class UserEndpoint{
         }catch (MailException ignored){
 
         }
-    }
-
-    private void deleteVetAndAnimals(Vet vet){
-        Long idVet = vet.getCode();
-        List<Animal> animals = animalDao.findByVetMicrochipIdOrCastratorId(idVet, idVet);
-        animalDao.deleteAll(animals);
-        vetDao.deleteById(vet.getCode());
     }
 
 }

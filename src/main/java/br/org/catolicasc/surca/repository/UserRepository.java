@@ -1,6 +1,7 @@
 package br.org.catolicasc.surca.repository;
 
 import br.org.catolicasc.surca.model.LevelsOfAccess;
+import br.org.catolicasc.surca.model.Status;
 import br.org.catolicasc.surca.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,13 +11,16 @@ import org.springframework.data.jpa.repository.Query;
 import javax.transaction.Transactional;
 
 public interface UserRepository extends AuditableRepository<User, Long> {
-    Page<User> findByName(Pageable pageable, String name);
+    Page<User> findByNameAndStatus(Pageable pageable, String name, Status status);
+    Page<User> findByStatus(Pageable pageable, Status status);
+    Page<User> findByNameStartingWithAndStatus(Pageable pageable, String name, Status status);
     User findByEmail(String email);
+    User findByEmailAndStatus(String email, Status status);
     @Query(value = "delete from `user` where email = ?1 and `password` = ?2", nativeQuery = true)
     @Modifying
     @Transactional
     void deleteByEmailAndPassword(String email, String password);
-    Page<User> findByLevelsOfAccess(LevelsOfAccess levelsOfAccess, Pageable pageable);
+    Page<User> findByLevelsOfAccessAndStatus(LevelsOfAccess levelsOfAccess, Status status, Pageable pageable);
     @Query(value = "select * from `user` where email = ?1", nativeQuery = true)
     User findByEmailWithReturnPassword(String email);
 }
