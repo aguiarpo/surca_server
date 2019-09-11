@@ -59,6 +59,9 @@ public class Animal extends Auditable{
     @Valid
     private Tutor tutor;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @ManyToOne
     private Vet vetMicrochip;
 

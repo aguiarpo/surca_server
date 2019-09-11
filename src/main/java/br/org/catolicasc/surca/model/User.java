@@ -57,6 +57,9 @@ public class User extends Auditable{
     @NotNull
     private LevelsOfAccess levelsOfAccess;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @OneToOne(mappedBy = "user")
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
