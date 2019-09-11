@@ -49,33 +49,47 @@ public class UserEndpoint{
     @GetMapping(path = "/admin/usuario")
     public ResponseEntity<?> listAll(Pageable pageable, PagedResourcesAssembler assembler){
         Page<User> users = userDao.findAll(pageable);
-        users.forEach(user -> createLinkById(user, "self", assembler));
-        return new ResponseEntity<>(createLinksListAll(users, pageable, assembler), HttpStatus.OK);
+        if(!users.isEmpty())
+            users.forEach(user -> createLinkById(user, assembler));
+        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id, PagedResourcesAssembler assembler){
         Optional<User> user =  userDao.findById(id);
-        createLink(user, "users", assembler);
+        if(user.isPresent())
+            createLink(user, "users", assembler);
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/nome/{nome}")
-    public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable){
+    public ResponseEntity<?> getUserName(@PathVariable("nome") String name, Pageable pageable,
+                                         PagedResourcesAssembler assembler){
         Page<User> users= userDao.findByName(pageable, name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        if(!users.isEmpty())
+            users.forEach(user -> createLinkById(user, assembler));
+        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/nome/like/{nome}")
-    public ResponseEntity<?> getUserNameLike(@PathVariable("nome") String name, Pageable pageable){
+    public ResponseEntity<?> getUserNameLike(@PathVariable("nome") String name, Pageable pageable,
+                                             PagedResourcesAssembler assembler){
         Page<User> users = userDao.findByNameStartingWith(pageable, name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        if(!users.isEmpty())
+            users.forEach(user -> createLinkById(user, assembler));
+        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/email/{email}")
-    public ResponseEntity<?> getUserEmail(@PathVariable("email") String email, Pageable pageable){
-        Page<User> users = userDao.findByEmail(pageable, email);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> getUserEmail(@PathVariable("email") String email, PagedResourcesAssembler assembler){
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            user = new User();
+        }else {
+            createLinkById(user, assembler);
+        }
+        createLinkFindBy(user, assembler);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario/email")
@@ -89,7 +103,8 @@ public class UserEndpoint{
     }
 
     @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")
-    public ResponseEntity<?> getUserIdNivel(@PathVariable("levelsOfAccessString") String levelsOfAccessString, Pageable pageable){
+    public ResponseEntity<?> getUserIdNivel(@PathVariable("levelsOfAccessString") String levelsOfAccessString,
+                                            Pageable pageable, PagedResourcesAssembler assembler){
         levelsOfAccessString = levelsOfAccessString.toUpperCase();
         Page<User> users;
         switch (levelsOfAccessString) {
@@ -113,12 +128,13 @@ public class UserEndpoint{
             default:
                 users = userDao.findByLevelsOfAccess(null, pageable);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        if(!users.isEmpty())
+            users.forEach(user -> createLinkById(user, assembler));
+        return new ResponseEntity<>(createLinkFindBy(users, pageable, assembler), HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/usuario")
     public ResponseEntity<?> saveLogin(@RequestBody User user){
-        user.setLevelsOfAccess(LevelsOfAccess.USUARIO);
         user.setBcryptPassword();
         return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
     }

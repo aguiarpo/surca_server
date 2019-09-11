@@ -8,9 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.UriTemplate;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
@@ -19,42 +16,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 public class UserHateos {
 
-    public static PagedResources<User> createLinksListAll(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
-        ControllerLinkBuilder ctrlBldr =
-                ControllerLinkBuilder.linkTo(methodOn(UserEndpoint.class).listAll(pageable,
-                        assembler));
-        return constructLinks(ctrlBldr, users, assembler);
-    }
-
-    private static PagedResources<User> constructLinks(ControllerLinkBuilder ctrlBldr, Page<User> users,
-                                                       PagedResourcesAssembler assembler){
-        UriComponentsBuilder builder = ctrlBldr.toUriComponentsBuilder();
-        PagedResources<User> resources = assembler.toResource(users);
-        resources.removeLinks();
-
-        int pageNumber = users.getPageable().getPageNumber();
-
-        if(pageNumber > 0){
-
-            builder.replaceQueryParam("page", pageNumber - 1);
-
-            Link selfLinkBefore =
-                    new Link(new UriTemplate(builder.build().toString()), "usersBefore");
-            resources.add(selfLinkBefore);
-        }
-        if(pageNumber <  users.getTotalPages() -1){
-            builder.replaceQueryParam("page", pageNumber + 1);
-
-            Link selfLinkAfter =
-                    new Link(new UriTemplate(builder.build().toString()), "usersAfter");
-
-            resources.add(selfLinkAfter);
-        }
-        return resources;
-    }
-
-    public static void createLinkById(User user, String rel, PagedResourcesAssembler assembler){
-        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode(), assembler)).withRel(rel);
+    public static void createLinkById(User user, PagedResourcesAssembler assembler){
+        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).getUserById(user.getCode(), assembler)).withRel("self");
         user.add(ctrlBldr);
     }
 
@@ -63,5 +26,60 @@ public class UserHateos {
                 assembler))
                 .withRel(rel);
         user.get().add(ctrlBldr);
+    }
+
+    public static void createLink(User user, String rel, PagedResourcesAssembler assembler){
+        Link ctrlBldr = linkTo(methodOn(UserEndpoint.class).listAll(PageRequest.of(0, 10),
+                assembler))
+                .withRel(rel);
+        user.add(ctrlBldr);
+    }
+
+    public static void createLinkFindBy(User user, PagedResourcesAssembler assembler){
+        user.add(createLinkFindByName(assembler));
+        user.add(createLinkFindByNameLike(assembler));
+        user.add(createLinkFindByEmail(assembler));
+        user.add(createLinkFindByLevelsOfAccess(assembler));
+        user.add(createLinkFindByAll(assembler));
+    }
+
+    public static PagedResources<User> createLinkFindBy(Page<User> users, Pageable pageable, PagedResourcesAssembler assembler){
+        PagedResources<User> resources = assembler.toResource(users);
+        resources.add(createLinkFindByName(assembler));
+        resources.add(createLinkFindByNameLike(assembler));
+        resources.add(createLinkFindByEmail(assembler));
+        resources.add(createLinkFindByLevelsOfAccess(assembler));
+        resources.add(createLinkFindByAll(assembler));
+        return resources;
+    }
+
+    private static Link createLinkFindByName(PagedResourcesAssembler assembler){
+        return linkTo(methodOn(UserEndpoint.class).getUserName(null, PageRequest.of(0, 10),
+                assembler))
+                .withRel("findByName");
+    }
+
+    private static Link createLinkFindByNameLike(PagedResourcesAssembler assembler){
+        return linkTo(methodOn(UserEndpoint.class).getUserNameLike(null, PageRequest.of(0, 10),
+                assembler))
+                .withRel("findByNameLike");
+    }
+
+    private static Link createLinkFindByEmail(PagedResourcesAssembler assembler){
+        return linkTo(methodOn(UserEndpoint.class).getUserEmail(null,
+                assembler))
+                .withRel("findByEmail");
+    }
+
+    private static Link createLinkFindByLevelsOfAccess(PagedResourcesAssembler assembler){
+        return linkTo(methodOn(UserEndpoint.class).getUserIdNivel(null, PageRequest.of(0, 10),
+                assembler))
+                .withRel("findByLevelOfAccess");
+    }
+
+    private static Link createLinkFindByAll(PagedResourcesAssembler assembler){
+        return linkTo(methodOn(UserEndpoint.class).listAll(PageRequest.of(0, 10),
+                assembler))
+                .withRel("users");
     }
 }
