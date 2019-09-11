@@ -96,6 +96,19 @@ public class UserEndpoint{
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/login/usuario")
+    public ResponseEntity<?> getLogin(@RequestBody User user){
+        User findUser = userDao.findByEmailAndStatus(user.getEmail(), Status.VISIBLE);
+        if(findUser != null) {
+            if (BCrypt.checkpw(user.getPassword(), findUser.getPassword())) {
+                findUser.setPassword(user.getPassword());
+            }else{
+                findUser = null;
+            }
+        }
+        return new ResponseEntity<>(findUser, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")
     public ResponseEntity<?> getUserIdNivel(@PathVariable("levelsOfAccessString") String levelsOfAccessString,
                                             Pageable pageable, PagedResourcesAssembler assembler){
