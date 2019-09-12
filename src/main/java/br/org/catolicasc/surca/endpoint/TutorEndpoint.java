@@ -1,10 +1,7 @@
 
 package br.org.catolicasc.surca.endpoint;
 
-import br.org.catolicasc.surca.model.Animal;
-import br.org.catolicasc.surca.model.Status;
-import br.org.catolicasc.surca.model.Tutor;
-import br.org.catolicasc.surca.model.Vet;
+import br.org.catolicasc.surca.model.*;
 import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
@@ -69,15 +66,15 @@ public class TutorEndpoint {
     }
 
     @PostMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> save(@RequestBody Tutor tutor){
-        Tutor findTutor = tutorDao.findByCpf(tutor.getCpf());
+    public ResponseEntity<?> save(@RequestBody TutorWithAnimals tutor){
+        Tutor findTutor = tutorDao.findByCpf(tutor.getTutor().getCpf());
         if(findTutor != null)
-            tutor.setCode(findTutor.getCode());
+            tutor.getTutor().setCode(findTutor.getCode());
         List<Animal> animals = tutor.getAnimals();
-        Tutor savedTutor = tutorDao.save(tutor);
+        Tutor savedTutor = tutorDao.save(tutor.getTutor());
         if(animals != null) {
             for (Animal animal : animals) {
-                animal.setTutor(tutor);
+                animal.setTutor(savedTutor);
                 animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
                 animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
                 animalDao.save(animal);
