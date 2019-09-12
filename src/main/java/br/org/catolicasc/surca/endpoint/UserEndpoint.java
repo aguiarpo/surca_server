@@ -96,17 +96,10 @@ public class UserEndpoint{
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/login/usuario")
-    public ResponseEntity<?> getLogin(@RequestBody User user){
-        User findUser = userDao.findByEmailAndStatus(user.getEmail(), Status.VISIBLE);
-        if(findUser != null) {
-            if (BCrypt.checkpw(user.getPassword(), findUser.getPassword())) {
-                findUser.setPassword(user.getPassword());
-            }else{
-                findUser = null;
-            }
-        }
-        return new ResponseEntity<>(findUser, HttpStatus.OK);
+    @GetMapping(path = "/user/usuario/login")
+    public ResponseEntity<?> getLogin(@AuthenticationPrincipal Authentication auth){
+        User user = userDao.findByEmail(auth.getName());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin/usuario/nivelDeAcesso/{levelsOfAccessString}")
@@ -234,9 +227,23 @@ public class UserEndpoint{
     }
 
     @PutMapping(path = "/admin/usuario")
-    public ResponseEntity<?> update(@RequestBody User user){
-        user.setBcryptPassword();
-        return new ResponseEntity<>(userDao.save(user), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody Vet vet){
+        Optional<User> findUser = userDao.findById(vet.getUser().getCode());
+        if(findUser.isPresent()) {
+            if(vet.getUser().getPassword() == null)
+                vet.getUser().setPassword(findUser.get().getPassword());
+            else
+                vet.getUser().setBcryptPassword();
+            if (findUser.get().getLevelsOfAccess() == LevelsOfAccess.VETERINARIO) {
+                Vet findVet = vetDao.findByUserCode(findUser.get().getCode());
+                vet.setCode(findVet.getCode());
+                vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
+                return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
+            } else{
+                return new ResponseEntity<>(userDao.save(vet.getUser()), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private void sendEmail(ArrayList<String> recipients, String body){
