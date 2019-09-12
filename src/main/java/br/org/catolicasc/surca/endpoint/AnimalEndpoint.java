@@ -72,20 +72,6 @@ public class AnimalEndpoint {
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> save(@RequestBody Animal animal){
-        Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
-        animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
-        animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
-        if(tutor == null){
-            tutor = tutorDao.save(animal.getTutor());
-            animal.setTutor(tutor);
-        }else{
-            animal.setTutor(tutor);
-        }
-        return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
-    }
-
     @DeleteMapping(path = "/veterinario/animal/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Long tutorId = animalDao.findIdByIdTutor(id);

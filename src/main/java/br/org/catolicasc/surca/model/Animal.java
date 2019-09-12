@@ -2,10 +2,8 @@ package br.org.catolicasc.surca.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Indexed;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -31,8 +29,8 @@ public class Animal extends Auditable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
     @Column(name = "id")
     private Long code;
-    @NotNull
     @Size(max = 20)
+    @NotEmpty
     private String microchipNumber;
     @NotEmpty
     private String name;

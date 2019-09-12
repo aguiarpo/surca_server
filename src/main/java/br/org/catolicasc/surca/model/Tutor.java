@@ -1,12 +1,14 @@
 package br.org.catolicasc.surca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -69,6 +71,6 @@ public class Tutor extends Auditable{
 
     @OneToMany(mappedBy = "tutor")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Valid
+    @JsonIgnore
     private List<Animal> animals;
 }

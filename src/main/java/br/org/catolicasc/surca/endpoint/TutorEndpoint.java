@@ -2,6 +2,7 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Animal;
+import br.org.catolicasc.surca.model.Status;
 import br.org.catolicasc.surca.model.Tutor;
 import br.org.catolicasc.surca.model.Vet;
 import br.org.catolicasc.surca.repository.AnimalRepository;
@@ -45,30 +46,33 @@ public class TutorEndpoint {
 
     @GetMapping(path = "/user/tutor/nome/{nome}")
     public ResponseEntity<?> getTutorByName(@PathVariable("nome")String name, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByName(pageable, name);
+        Page<Tutor> tutors =  tutorDao.findByNameAndStatus(pageable, name, Status.VISIBLE);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/tutor/nome/like/{nome}")
     public ResponseEntity<?> getTutorByNameLike(@PathVariable("nome")String name, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByNameStartingWith(pageable, name);
+        Page<Tutor> tutors =  tutorDao.findByNameStartingWithAndStatus(pageable, name, Status.VISIBLE);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/tutor/cpf/{cpf}")
-    public ResponseEntity<?> getTutorByCpf(@PathVariable("cpf")String cpf, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByCpf(pageable, cpf);
+    public ResponseEntity<?> getTutorByCpf(@PathVariable("cpf")String cpf){
+        Tutor tutors =  tutorDao.findByCpfAndStatus(cpf, Status.VISIBLE);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/tutor/rg/{rg}")
     public ResponseEntity<?> getTutorByRg(@PathVariable("rg")String rg, Pageable pageable){
-        Page<Tutor> tutors =  tutorDao.findByRg(pageable, rg);
+        Page<Tutor> tutors =  tutorDao.findByRgAndStatus(pageable, rg, Status.VISIBLE);
         return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
     @PostMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> save(@RequestBody Tutor tutor){
+        Tutor findTutor = tutorDao.findByCpf(tutor.getCpf());
+        if(findTutor != null)
+            tutor.setCode(findTutor.getCode());
         List<Animal> animals = tutor.getAnimals();
         Tutor savedTutor = tutorDao.save(tutor);
         if(animals != null) {
@@ -84,10 +88,15 @@ public class TutorEndpoint {
 
     @DeleteMapping(path = "/veterinario/tutor/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
+        Optional<Tutor> tutor = tutorDao.findById(id);
         List<Animal> animals = animalDao.findByTutorCode(id);
         if(!animals.isEmpty())
-            animalDao.deleteAll(animals);
-        tutorDao.deleteById(id);
+            for (Animal animal : animals){
+                animal.setStatus(Status.INVISIBLE);
+                animalDao.save(animal);
+            }
+        tutor.get().setStatus(Status.INVISIBLE);
+        tutorDao.save(tutor.get());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -95,10 +104,15 @@ public class TutorEndpoint {
     public ResponseEntity<?> deleteAll(@RequestBody List<Tutor> tutors){
         for(Tutor tutor : tutors) {
             Long id = tutor.getCode();
+            Optional<Tutor> findTutor = tutorDao.findById(id);
             List<Animal> animals = animalDao.findByTutorCode(id);
             if(!animals.isEmpty())
-                animalDao.deleteAll(animals);
-            tutorDao.deleteById(id);
+                for (Animal animal : animals){
+                    animal.setStatus(Status.INVISIBLE);
+                    animalDao.save(animal);
+                }
+            findTutor.get().setStatus(Status.INVISIBLE);
+            tutorDao.save(findTutor.get());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
