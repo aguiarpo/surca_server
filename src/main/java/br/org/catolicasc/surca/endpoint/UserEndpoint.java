@@ -157,7 +157,7 @@ public class UserEndpoint{
                 vet.getUser().setBcryptPassword();
             }
             vetDao.save(vet);
-        }else{
+        }else if(!user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
             user.setPassword(password);
             user.setBcryptPassword();
             userDao.save(user);
@@ -200,12 +200,14 @@ public class UserEndpoint{
     @DeleteMapping(path = "/admin/usuario")
     public ResponseEntity<?> deleteAll(@RequestBody List<User> users){
         for(User user : users){
-            Vet vet = vetDao.findByUserCode(user.getCode());
-            if(vet == null)
-                userDao.deleteById(user.getCode());
-            else {
+            Optional<User> findUser = userDao.findById(user.getCode());
+            if(findUser.get().equals(LevelsOfAccess.VETERINARIO)) {
+                user = findUser.get();
                 user.setStatus(Status.INVISIBLE);
                 userDao.save(user);
+            }
+            else {
+                userDao.deleteById(user.getCode());
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
