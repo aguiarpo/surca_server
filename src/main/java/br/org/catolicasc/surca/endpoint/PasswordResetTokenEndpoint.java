@@ -8,6 +8,7 @@ import br.org.catolicasc.surca.model.User;
 import br.org.catolicasc.surca.repository.PasswordResetTokenRepository;
 import br.org.catolicasc.surca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -29,6 +30,16 @@ public class PasswordResetTokenEndpoint {
         this.mailer = mailer;
         this.passwordResetTokenDao = passwordResetTokenDao;
         this.userDao = userDao;
+    }
+
+    @GetMapping(path = "admin/token")
+    public ResponseEntity<?> listAll(Pageable pageable){
+        return new ResponseEntity<>(passwordResetTokenDao.findAll(pageable), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "admin/token/{expiryDate}")
+    public ResponseEntity<?> getExpiryDate(@PathVariable("expiryDate")String expiryDate, Pageable pageable){
+        return new ResponseEntity<>(passwordResetTokenDao.findByExpiryDate(expiryDate, pageable), HttpStatus.OK);
     }
 
     @GetMapping(path = "/login/recuperarSenha/{token}")
@@ -56,7 +67,6 @@ public class PasswordResetTokenEndpoint {
         PasswordResetToken passwordResetToken;
         Optional<User> findUser = userDao.findById(id);
         if(findUser.isPresent() && user.getPassword() != null){
-            user.setBcryptPassword();
             String password = user.getPassword();
             passwordResetToken = passwordResetTokenDao.findByUserCodeAndToken(id, token);
             if(passwordResetToken != null){
@@ -64,8 +74,12 @@ public class PasswordResetTokenEndpoint {
                 if(passwordResetToken.getExpiryDate().isBefore(today)){
                     throw new ResourceNotFoundException("Código expirou");
                 }
+                user = findUser.get();
                 user.setPassword(password);
-                userDao.save(user);
+                user.setBcryptPassword();
+                User saveUser = userDao.save(user);
+                if(saveUser !=null)
+                    passwordResetTokenDao.delete(passwordResetToken);
             }else{
                 throw new ResourceNotFoundException("Código incorreto");
             }

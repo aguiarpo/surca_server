@@ -27,6 +27,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .title("Resource Not Found")
                 .detail(rfnException.getMessage())
+                .field("Erro de acesso")
+                .fieldMessage(rfnException.getMessage())
                 .developmentMessage(rfnException.getClass().getName())
                 .build();
         return new ResponseEntity<>(rfnExceptionDetails, HttpStatus.NOT_FOUND);
