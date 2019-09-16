@@ -31,7 +31,7 @@ public class AnimalEndpoint {
 
     @GetMapping(path = "/user/animal")
     public ResponseEntity<?> listAll(Pageable pageable){
-        return new ResponseEntity<>(animalDao.findAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(animalDao.findByStatus(pageable, Status.VISIBLE), HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/{id}")
@@ -42,31 +42,31 @@ public class AnimalEndpoint {
 
     @GetMapping(path = "/user/animal/numeroMicrochip/{microchipNumber}")
     public ResponseEntity<?> getAnimalByMicrochipNumber(@PathVariable("microchipNumber")String microchipNumber){
-        Animal animal =  animalDao.findByMicrochipNumber(microchipNumber);
+        Animal animal =  animalDao.findByMicrochipNumberAndStatus(microchipNumber, Status.VISIBLE);
         return new ResponseEntity<>(animal, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/nome/{nome}")
     public ResponseEntity<?> getAnimalByName(@PathVariable("nome")String name, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findByName(pageable, name);
+        Page<Animal> animalModels =  animalDao.findByNameAndStatus(pageable, name, Status.VISIBLE);
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/nome/like/{nome}")
     public ResponseEntity<?> getAnimalByNameLike(@PathVariable("nome")String name, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findByNameStartingWith(pageable, name);
+        Page<Animal> animalModels =  animalDao.findByNameStartingWithAndStatus(pageable, name, Status.VISIBLE);
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/especie/{especie}")
     public ResponseEntity<?> getAnimalBySpecies(@PathVariable("especie")String species, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findBySpecies(pageable, species);
+        Page<Animal> animalModels =  animalDao.findBySpeciesAndStatus(pageable, species, Status.VISIBLE);
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/animal/raca/{raca}")
     public ResponseEntity<?> getAnimalByBreed(@PathVariable("raca")String breed, Pageable pageable){
-        Page<Animal> animalModels =  animalDao.findByBreed(pageable, breed);
+        Page<Animal> animalModels =  animalDao.findByBreedAndStatus(pageable, breed, Status.VISIBLE);
         return new ResponseEntity<>(animalModels, HttpStatus.OK);
     }
 

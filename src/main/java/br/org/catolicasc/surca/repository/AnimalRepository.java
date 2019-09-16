@@ -10,11 +10,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AnimalRepository extends AuditableRepository<Animal, Long> {
-    Page<Animal> findByName(Pageable pageable, String name);
-    Page<Animal> findBySpecies(Pageable pageable, String species);
-    Page<Animal> findByBreed(Pageable pageable, String breed);
+    Page<Animal> findByNameAndStatus(Pageable pageable, String name, Status status);
+    Page<Animal> findBySpeciesAndStatus(Pageable pageable, String species, Status status);
+    Page<Animal> findByBreedAndStatus(Pageable pageable, String breed, Status status);
     List<Animal> findByTutorCode(Long idTutor);
-    Animal findByMicrochipNumber(String microchipNumber);
+    Animal findByMicrochipNumberAndStatus(String microchipNumber, Status status);
 
     @Query(value = "SELECT count(id) FROM animal WHERE tutor_id = :tutor_id and status = :status", nativeQuery = true)
     int findByTutorWithAnimal(@Param("tutor_id") Long tutorId, @Param("status") Status status);
@@ -22,6 +22,7 @@ public interface AnimalRepository extends AuditableRepository<Animal, Long> {
     @Query(value = "SELECT tutor_id FROM animal WHERE id = :id", nativeQuery = true)
     Long findIdByIdTutor(@Param("id") Long id);
 
-    Page<Animal> findByNameStartingWith(Pageable pageable, String name);
+    Page<Animal> findByNameStartingWithAndStatus(Pageable pageable, String name, Status status);
+    Page<Animal> findByStatus(Pageable pageable, Status status);
 
 }

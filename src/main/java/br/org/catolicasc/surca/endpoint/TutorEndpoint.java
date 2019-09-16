@@ -32,7 +32,7 @@ public class TutorEndpoint {
 
     @GetMapping(path = "/user/tutor")
     public ResponseEntity<?> listAll(Pageable pageable){
-        return new ResponseEntity<>(tutorDao.findAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(tutorDao.findByStatus(pageable, Status.VISIBLE), HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/tutor/{id}")
