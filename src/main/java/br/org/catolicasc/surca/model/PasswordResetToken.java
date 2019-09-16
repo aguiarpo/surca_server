@@ -21,7 +21,7 @@ public class PasswordResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "password_reset_token_seq")
-    private Long id;
+    private Long code;
 
     private String token;
 

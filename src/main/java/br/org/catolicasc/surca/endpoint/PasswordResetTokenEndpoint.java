@@ -37,6 +37,11 @@ public class PasswordResetTokenEndpoint {
         return new ResponseEntity<>(passwordResetTokenDao.findAll(pageable), HttpStatus.OK);
     }
 
+    @GetMapping(path = "admin/token/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") Long id){
+        return new ResponseEntity<>(passwordResetTokenDao.findById(id), HttpStatus.OK);
+    }
+
     @GetMapping(path = "admin/token/{expiryDate}")
     public ResponseEntity<?> getExpiryDate(@PathVariable("expiryDate")String expiryDate, Pageable pageable){
         return new ResponseEntity<>(passwordResetTokenDao.findByExpiryDate(expiryDate, pageable), HttpStatus.OK);
@@ -99,6 +104,19 @@ public class PasswordResetTokenEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "admin/token/{id}")
+    public ResponseEntity<?> listAll(@PathVariable("id") Long id){
+        passwordResetTokenDao.deleteById(id);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "admin/token")
+    public ResponseEntity<?> listAll(@RequestBody List<PasswordResetToken> passwordResetTokens){
+        for(PasswordResetToken passwordResetToken : passwordResetTokens){
+            passwordResetTokenDao.deleteById(passwordResetToken.getCode());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     private void sendEmail(ArrayList<String> recipients, String body){
         try{
