@@ -87,11 +87,12 @@ public class TutorEndpoint {
     public ResponseEntity<?> delete(@PathVariable Long id){
         Optional<Tutor> tutor = tutorDao.findById(id);
         List<Animal> animals = animalDao.findByTutorCode(id);
-        if(!animals.isEmpty())
-            for (Animal animal : animals){
+        if(!animals.isEmpty()) {
+            for (Animal animal : animals) {
                 animal.setStatus(Status.INVISIBLE);
                 animalDao.save(animal);
             }
+        }
         tutor.get().setStatus(Status.INVISIBLE);
         tutorDao.save(tutor.get());
         return new ResponseEntity<>(HttpStatus.OK);

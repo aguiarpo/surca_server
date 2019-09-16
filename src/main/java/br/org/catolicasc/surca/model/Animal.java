@@ -58,7 +58,6 @@ public class Animal extends Auditable{
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(updatable = false)
     private Status status = Status.VISIBLE;
 
     @ManyToOne
