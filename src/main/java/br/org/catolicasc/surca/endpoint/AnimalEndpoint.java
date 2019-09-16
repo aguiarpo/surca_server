@@ -1,8 +1,6 @@
 package br.org.catolicasc.surca.endpoint;
 
-import br.org.catolicasc.surca.model.Animal;
-import br.org.catolicasc.surca.model.Tutor;
-import br.org.catolicasc.surca.model.Vet;
+import br.org.catolicasc.surca.model.*;
 import br.org.catolicasc.surca.repository.AnimalRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
@@ -75,9 +73,15 @@ public class AnimalEndpoint {
     @DeleteMapping(path = "/veterinario/animal/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Long tutorId = animalDao.findIdByIdTutor(id);
-        animalDao.deleteById(id);
-        if(animalDao.findByTutorWithAnimal(tutorId) == 0){
-            tutorDao.deleteById(tutorId);
+        Optional<Animal> animal = animalDao.findById(id);
+        if(animal.isPresent()) {
+            animal.get().setStatus(Status.INVISIBLE);
+            animalDao.save(animal.get());
+            if (animalDao.findByTutorWithAnimal(tutorId, Status.INVISIBLE) == 0) {
+                Optional<Tutor> tutor = tutorDao.findById(tutorId);
+                tutor.get().setStatus(Status.INVISIBLE);
+                tutorDao.save(tutor.get());
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -87,9 +91,16 @@ public class AnimalEndpoint {
         for(Animal animal : animals) {
             Long id = animal.getCode();
             Long tutorId = animalDao.findIdByIdTutor(id);
-            animalDao.deleteById(id);
-            if(animalDao.findByTutorWithAnimal(tutorId) == 0){
-                tutorDao.deleteById(tutorId);
+            Optional<Animal> findAnimal = animalDao.findById(animal.getCode());
+            if(findAnimal.isPresent()) {
+                animal = findAnimal.get();
+                animal.setStatus(Status.INVISIBLE);
+                animalDao.save(animal);
+                if (animalDao.findByTutorWithAnimal(tutorId, Status.INVISIBLE) == 0) {
+                    Optional<Tutor> tutor = tutorDao.findById(tutorId);
+                    tutor.get().setStatus(Status.INVISIBLE);
+                    tutorDao.save(tutor.get());
+                }
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -97,13 +108,15 @@ public class AnimalEndpoint {
 
 
     @PutMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> update(@RequestBody Animal animal){
-        animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
-        animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
-        Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
-        animal.getTutor().setCode(tutor.getCode()
-        );
-        return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody TutorWithAnimals tutorWithAnimals){
+        for(Animal animal : tutorWithAnimals.getAnimals()) {
+            animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
+            animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
+            Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
+            animal.setTutor(tutor);
+            return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Vet findByCrmv(String crmv){
