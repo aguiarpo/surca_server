@@ -3,6 +3,7 @@ package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.*;
 import br.org.catolicasc.surca.repository.AnimalRepository;
+import br.org.catolicasc.surca.repository.IncidentRepository;
 import br.org.catolicasc.surca.repository.TutorRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,14 @@ public class TutorEndpoint {
     private TutorRepository tutorDao;
     private AnimalRepository animalDao;
     private VetRepository vetDao;
+    private IncidentRepository incidentDao;
 
     @Autowired
-    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao, VetRepository vetDao) {
+    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao, VetRepository vetDao, IncidentRepository incidentDao) {
         this.tutorDao = tutorDao;
         this.animalDao = animalDao;
         this.vetDao = vetDao;
+        this.incidentDao = incidentDao;
     }
 
     @GetMapping(path = "/user/tutor")
@@ -67,6 +70,7 @@ public class TutorEndpoint {
 
     @PostMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> save(@RequestBody TutorWithAnimals tutor){
+        saveIncident(tutor.getTutor().getIncidents());
         Tutor findTutor = tutorDao.findByCpf(tutor.getTutor().getCpf());
         if(findTutor != null)
             tutor.getTutor().setCode(findTutor.getCode());
@@ -117,10 +121,18 @@ public class TutorEndpoint {
 
     @PutMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> update(@RequestBody Tutor tutor){
+        saveIncident(tutor.getIncidents());
         return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
     }
 
     private Vet findByCrmv(String crmv){
         return vetDao.findByCrmv(crmv);
+    }
+
+    private void saveIncident(List<Incident>  incidents){
+        for(Incident incident : incidents){
+            if(incident.getIncident() != null)
+                incidentDao.save(incident);
+        }
     }
 }
