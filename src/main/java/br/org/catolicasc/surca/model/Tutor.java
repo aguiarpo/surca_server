@@ -72,4 +72,10 @@ public class Tutor extends Auditable{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
     private List<Animal> animals;
+
+    @ManyToMany
+    @JoinTable(name="tutor_incident", joinColumns=
+            {@JoinColumn(name="tutor_id")}, inverseJoinColumns=
+            {@JoinColumn(name="incident_id")})
+    private List<Incident> incidents;
 }
