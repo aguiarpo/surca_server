@@ -47,13 +47,18 @@ public class PasswordResetTokenEndpoint {
         return new ResponseEntity<>(passwordResetTokenDao.findByExpiryDate(expiryDate, pageable), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/login/recuperarSenha/{token}")
-    public ResponseEntity<?> getToken(@RequestBody User user, @PathVariable("token") String token){
+    @GetMapping(path = "/login/recuperarSenha/{token}/{email}")
+    public ResponseEntity<?> getToken(@PathVariable("token") String token, @PathVariable("email") String email){
         PasswordResetToken passwordResetToken;
-        if(user.getEmail() != null){
-            user = userDao.findByEmail(user.getEmail());
-            passwordResetToken = passwordResetTokenDao.findByUserCodeAndToken(user.getCode(), token);
-            LocalDateTime today = LocalDateTime.now();
+        User user;
+        LocalDateTime today = LocalDateTime.now();
+        if(email!= null){
+            user = userDao.findByEmail(email);
+            if(user == null){
+                throw new ResourceNotFoundException("Email não cadastrado");
+            }else{
+                passwordResetToken = passwordResetTokenDao.findByUserCodeAndToken(user.getCode(), token);
+            }
             if(passwordResetToken == null){
                 throw new ResourceNotFoundException("Código incorreto");
             }else{
