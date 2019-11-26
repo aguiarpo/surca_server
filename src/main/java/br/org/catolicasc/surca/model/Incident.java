@@ -15,6 +15,8 @@ import java.util.List;
 @Setter
 @SequenceGenerator(name = "incident_seq", sequenceName = "incident_seq",
         initialValue = 2, allocationSize = 1)
+@Table(indexes = {@Index(name = "index_name", columnList="name")},
+        uniqueConstraints = @UniqueConstraint(name = "name", columnNames=  "name" ))
 public class Incident {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "incident_seq")

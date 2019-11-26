@@ -87,7 +87,6 @@ public class TutorEndpoint {
 
     @PutMapping(path = "/veterinario/tutor")
     public ResponseEntity<?> update(@RequestBody Tutor tutor){
-        saveIncident(tutor.getIncidents());
         return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
     }
 

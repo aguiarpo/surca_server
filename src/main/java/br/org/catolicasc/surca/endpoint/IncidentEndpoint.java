@@ -22,26 +22,31 @@ public class IncidentEndpoint {
     }
 
     @PostMapping(path = "/admin/incidentes")
-    public ResponseEntity<?> save(@RequestBody Incident incident){
-        return new ResponseEntity<>(incidentDao.save(incident), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/admin/incidentes/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        incidentDao.deleteById(id);
+    public ResponseEntity<?> save(@RequestBody List<Incident> incidents){
+        updateOrSave(incidents);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/admin/incidentes")
+    @PostMapping(path = "/admin/incidentes/remover")
     public ResponseEntity<?> deleteAll(@RequestBody List<Incident> incidents){
-        for(Incident incident : incidents) {
-            incidentDao.delete(incident);
-        }
+        incidentDao.deleteAll(incidents);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/admin/incidentes")
-    public ResponseEntity<?> update(@RequestBody Incident incident){
-        return new ResponseEntity<>(incidentDao.save(incident), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody List<Incident> incidents){
+        updateOrSave(incidents);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void updateOrSave(List<Incident> incidents){
+        for (Incident incident: incidents) {
+            Incident find = incidentDao.findByName(incident.getName());
+            if(find == null)incidentDao.save(incident);
+            else{
+                incident.setCode(find.getCode());
+                incidentDao.save(incident);
+            }
+        }
     }
 }

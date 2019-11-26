@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-class Auditable  extends ResourceSupport {
+class Auditable{
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @CreatedDate
     @Column(nullable = false, updatable = false)

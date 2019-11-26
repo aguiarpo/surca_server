@@ -1,6 +1,7 @@
 package br.org.catolicasc.surca.endpoint;
 
 import br.org.catolicasc.surca.model.Medications;
+import br.org.catolicasc.surca.repository.AnimalMedicationsRepository;
 import br.org.catolicasc.surca.repository.MedicationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,33 +17,39 @@ import java.util.List;
 public class MedicationsEndpoint {
 
     private MedicationsRepository medicationsDao;
+    private AnimalMedicationsRepository animalMedicationsDao;
 
     @Autowired
-    public MedicationsEndpoint(MedicationsRepository medicationsDao) {
+    public MedicationsEndpoint(MedicationsRepository medicationsDao, AnimalMedicationsRepository animalMedicationsDao) {
         this.medicationsDao = medicationsDao;
+        this.animalMedicationsDao = animalMedicationsDao;
     }
 
     @PostMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> save(@RequestBody Medications medications){
-        return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/veterinario/medicacoes/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        medicationsDao.deleteById(id);
+    public ResponseEntity<?> save(@RequestBody List<Medications> medications){
+        updateOrSave(medications);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/medicacoes")
+    @PostMapping(path = "/veterinario/medicacoes/remover")
     public ResponseEntity<?> deleteAll(@RequestBody List<Medications> medications){
-        for(Medications medication : medications) {
-            medicationsDao.delete(medication);
+        for (Medications medication: medications) {
+            animalMedicationsDao.deleteByMedicationCode(medication.getCode());
         }
+        medicationsDao.deleteAll(medications);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> update(@RequestBody Medications medications){
-        return new ResponseEntity<>(medicationsDao.save(medications), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody List<Medications> medications){
+        updateOrSave(medications);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void updateOrSave(List<Medications> medications){
+        for (Medications medication: medications) {
+            Medications find = medicationsDao.findByName(medication.getName());
+            if(find == null)medicationsDao.save(medication);
+        }
     }
 }

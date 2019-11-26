@@ -36,7 +36,6 @@ public class Animal extends Auditable{
     private String name;
     @NotEmpty
     private String species;
-    @Past
     @NotNull
     private LocalDate birthDate;
     @NotNull
@@ -47,7 +46,6 @@ public class Animal extends Auditable{
     private String breed;
     @NotNull
     private Short sizeCm;
-    @Past
     @NotNull
     private LocalDate dateMicrochip;
     @Column(columnDefinition = "TEXT")
