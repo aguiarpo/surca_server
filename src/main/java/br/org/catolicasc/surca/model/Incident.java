@@ -33,7 +33,6 @@ public class Incident {
     @JoinTable(name="tutor_incident", joinColumns=
             {@JoinColumn(name="incident_id")}, inverseJoinColumns=
             {@JoinColumn(name="tutor_id")})
-    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Tutor> tutors;
 }

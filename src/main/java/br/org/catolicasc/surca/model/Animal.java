@@ -51,7 +51,7 @@ public class Animal extends Auditable{
     @Column(columnDefinition = "TEXT")
     private String comments;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Tutor tutor;
 
     @Enumerated(EnumType.STRING)

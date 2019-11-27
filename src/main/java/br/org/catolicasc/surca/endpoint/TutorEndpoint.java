@@ -31,26 +31,9 @@ public class TutorEndpoint {
     }
 
     @PostMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> save(@RequestBody TutorWithAnimals tutor){
-        saveIncident(tutor.getTutor().getIncidents());
-        Tutor findTutor = tutorDao.findByCpf(tutor.getTutor().getCpf());
-        if(findTutor != null)
-            tutor.getTutor().setCode(findTutor.getCode());
-        List<Animal> animals = tutor.getAnimals();
-        Tutor savedTutor = tutorDao.save(tutor.getTutor());
-        if(animals != null) {
-            for (Animal animal : animals) {
-                animal.setTutor(savedTutor);
-                animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
-                animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
-                Animal savedAnimal = animalDao.save(animal);
-                for(AnimalMedications medication : animal.getMedications()){
-                    medication.setAnimal(savedAnimal);
-                    animalMedicationsDao.save(medication);
-                }
-            }
-        }
-        return new ResponseEntity<>(savedTutor, HttpStatus.OK);
+    public ResponseEntity<?> save(@RequestBody List<Tutor> tutors){
+        updateOrSave(tutors);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/veterinario/tutor/{id}")
@@ -86,8 +69,9 @@ public class TutorEndpoint {
     }
 
     @PutMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> update(@RequestBody Tutor tutor){
-        return new ResponseEntity<>(tutorDao.save(tutor), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody List<Tutor> tutors){
+        updateOrSave(tutors);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Vet findByCrmv(String crmv){
@@ -98,6 +82,23 @@ public class TutorEndpoint {
         for(Incident incident : incidents){
             if(incident.getName() != null)
                 incidentDao.save(incident);
+        }
+    }
+
+    private void updateOrSave(List<Tutor> tutors){
+        for (Tutor tutor: tutors) {
+            Tutor find = tutorDao.findByCpf(tutor.getCpf());
+            Tutor findRg = tutorDao.findByRg(tutor.getRg());
+            if(find == null && findRg == null)tutorDao.save(tutor);
+            else{
+                if(find != null){
+                    tutor.setCode(find.getCode());
+                    tutorDao.save(tutor);
+                }else{
+                    tutor.setCode(findRg.getCode());
+                    tutorDao.save(tutor);
+                }
+            }
         }
     }
 }

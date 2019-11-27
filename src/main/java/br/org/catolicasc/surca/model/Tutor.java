@@ -64,7 +64,7 @@ public class Tutor extends Auditable{
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Status status = Status.VISIBLE;
+    private Status status;
 
     @OneToMany(mappedBy = "tutor")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

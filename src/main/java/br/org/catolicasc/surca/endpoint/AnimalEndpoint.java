@@ -67,14 +67,8 @@ public class AnimalEndpoint {
 
 
     @PutMapping(path = "/veterinario/animal")
-    public ResponseEntity<?> update(@RequestBody TutorWithAnimals tutorWithAnimals){
-        for(Animal animal : tutorWithAnimals.getAnimals()) {
-            animal.setCastrator(findByCrmv(animal.getCastrator().getCrmv()));
-            animal.setVetMicrochip(findByCrmv(animal.getVetMicrochip().getCrmv()));
-            Tutor tutor = tutorDao.findByCpf(animal.getTutor().getCpf());
-            animal.setTutor(tutor);
-            return new ResponseEntity<>(animalDao.save(animal), HttpStatus.OK);
-        }
+    public ResponseEntity<?> update(@RequestBody Animal tutorWithAnimals){
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
