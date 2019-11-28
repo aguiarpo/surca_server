@@ -38,20 +38,19 @@ public class Animal extends Auditable{
     private String species;
     @NotNull
     private LocalDate birthDate;
-    @NotNull
-    private Boolean animalCastrated;
     @NotEmpty
     private String coatColor;
     @NotEmpty
     private String breed;
     @NotNull
-    private Short sizeCm;
+    @Enumerated(EnumType.STRING)
+    private br.org.catolicasc.surca.model.Size size;
     @NotNull
     private LocalDate dateMicrochip;
     @Column(columnDefinition = "TEXT")
     private String comments;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Tutor tutor;
 
     @Enumerated(EnumType.STRING)
@@ -60,9 +59,6 @@ public class Animal extends Auditable{
 
     @ManyToOne
     private Vet vetMicrochip;
-
-    @ManyToOne
-    private Vet castrator;
 
     @OneToMany(mappedBy = "animal")
     private List<AnimalMedications> medications;

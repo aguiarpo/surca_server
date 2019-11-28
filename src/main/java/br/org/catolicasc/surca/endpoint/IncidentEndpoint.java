@@ -22,31 +22,29 @@ public class IncidentEndpoint {
     }
 
     @PostMapping(path = "/admin/incidentes")
-    public ResponseEntity<?> save(@RequestBody List<Incident> incidents){
-        updateOrSave(incidents);
+    public ResponseEntity<?> save(@RequestBody Incident incident){
+        updateOrSave(incident);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/admin/incidentes/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody List<Incident> incidents){
-        incidentDao.deleteAll(incidents);
+    public ResponseEntity<?> deleteAll(@RequestBody Incident incident){
+        incidentDao.delete(incident);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/admin/incidentes")
-    public ResponseEntity<?> update(@RequestBody List<Incident> incidents){
-        updateOrSave(incidents);
+    public ResponseEntity<?> update(@RequestBody Incident incident){
+        updateOrSave(incident);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void updateOrSave(List<Incident> incidents){
-        for (Incident incident: incidents) {
+    private void updateOrSave(Incident incident){
             Incident find = incidentDao.findByName(incident.getName());
             if(find == null)incidentDao.save(incident);
             else{
                 incident.setCode(find.getCode());
                 incidentDao.save(incident);
             }
-        }
     }
 }

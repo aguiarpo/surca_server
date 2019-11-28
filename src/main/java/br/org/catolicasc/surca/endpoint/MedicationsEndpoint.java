@@ -26,30 +26,26 @@ public class MedicationsEndpoint {
     }
 
     @PostMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> save(@RequestBody List<Medications> medications){
-        updateOrSave(medications);
+    public ResponseEntity<?> save(@RequestBody Medications medication){
+        updateOrSave(medication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/veterinario/medicacoes/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody List<Medications> medications){
-        for (Medications medication: medications) {
-            animalMedicationsDao.deleteByMedicationCode(medication.getCode());
-        }
-        medicationsDao.deleteAll(medications);
+    public ResponseEntity<?> deleteAll(@RequestBody Medications medication){
+        animalMedicationsDao.deleteByMedicationCode(medication.getCode());
+        medicationsDao.delete(medication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/veterinario/medicacoes")
-    public ResponseEntity<?> update(@RequestBody List<Medications> medications){
-        updateOrSave(medications);
+    public ResponseEntity<?> update(@RequestBody Medications medication){
+        updateOrSave(medication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void updateOrSave(List<Medications> medications){
-        for (Medications medication: medications) {
+    private void updateOrSave(Medications medication){
             Medications find = medicationsDao.findByName(medication.getName());
             if(find == null)medicationsDao.save(medication);
-        }
     }
 }

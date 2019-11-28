@@ -31,29 +31,13 @@ public class TutorEndpoint {
     }
 
     @PostMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> save(@RequestBody List<Tutor> tutors){
-        updateOrSave(tutors);
+    public ResponseEntity<?> save(@RequestBody Tutor tutor){
+        updateOrSave(tutor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/tutor/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        Optional<Tutor> tutor = tutorDao.findById(id);
-        List<Animal> animals = animalDao.findByTutorCode(id);
-        if(!animals.isEmpty()) {
-            for (Animal animal : animals) {
-                animal.setStatus(Status.INVISIBLE);
-                animalDao.save(animal);
-            }
-        }
-        tutor.get().setStatus(Status.INVISIBLE);
-        tutorDao.save(tutor.get());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> deleteAll(@RequestBody List<Tutor> tutors){
-        for(Tutor tutor : tutors) {
+    @PostMapping(path = "/veterinario/tutor/remover")
+    public ResponseEntity<?> deleteAll(@RequestBody Tutor tutor){
             Long id = tutor.getCode();
             Optional<Tutor> findTutor = tutorDao.findById(id);
             List<Animal> animals = animalDao.findByTutorCode(id);
@@ -64,13 +48,12 @@ public class TutorEndpoint {
                 }
             findTutor.get().setStatus(Status.INVISIBLE);
             tutorDao.save(findTutor.get());
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/veterinario/tutor")
-    public ResponseEntity<?> update(@RequestBody List<Tutor> tutors){
-        updateOrSave(tutors);
+    public ResponseEntity<?> update(@RequestBody Tutor tutor){
+        updateOrSave(tutor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -85,8 +68,7 @@ public class TutorEndpoint {
         }
     }
 
-    private void updateOrSave(List<Tutor> tutors){
-        for (Tutor tutor: tutors) {
+    private void updateOrSave(Tutor tutor){
             Tutor find = tutorDao.findByCpf(tutor.getCpf());
             Tutor findRg = tutorDao.findByRg(tutor.getRg());
             if(find == null && findRg == null)tutorDao.save(tutor);
@@ -99,6 +81,5 @@ public class TutorEndpoint {
                     tutorDao.save(tutor);
                 }
             }
-        }
     }
 }

@@ -32,9 +32,5 @@ public class Vet{
     @OneToMany(mappedBy = "vetMicrochip")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Animal> animalsMicrochip;
-
-    @OneToMany(mappedBy = "castrator")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private List<Animal> animalsCastrator;
-
+    
 }

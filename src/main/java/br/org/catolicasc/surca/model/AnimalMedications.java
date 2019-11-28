@@ -29,7 +29,6 @@ public class AnimalMedications {
 
     @ManyToOne
     @JoinColumn
-    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Animal animal;
 

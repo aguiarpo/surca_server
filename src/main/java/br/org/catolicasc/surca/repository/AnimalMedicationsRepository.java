@@ -7,4 +7,6 @@ import javax.transaction.Transactional;
 public interface AnimalMedicationsRepository extends CrudRepository<AnimalMedications, Long>{
     @Transactional
     void deleteByMedicationCode(Long code);
+    @Transactional
+    void deleteByAnimalCode(Long code);
 }

@@ -15,6 +15,7 @@ public interface AnimalRepository extends AuditableRepository<Animal, Long> {
     Page<Animal> findByBreedAndStatus(Pageable pageable, String breed, Status status);
     List<Animal> findByTutorCode(Long idTutor);
     Animal findByMicrochipNumberAndStatus(String microchipNumber, Status status);
+    Animal findByMicrochipNumber(String microchipNumber);
 
     @Query(value = "SELECT count(id) FROM animal WHERE tutor_id = :tutor_id and status = :status", nativeQuery = true)
     int findByTutorWithAnimal(@Param("tutor_id") Long tutorId, @Param("status") Status status);
