@@ -31,11 +31,11 @@ public class AnimalEndpoint {
         this.medicationsDao = medicationsDao;
     }
 
-    @PostMapping(path = "/veterinario/animal/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody Animal animal){
-            Long id = animal.getCode();
+    @DeleteMapping(path = "/veterinario/animal/{id}")
+    public ResponseEntity<?> deleteAll(@PathVariable Long id){
+            Animal animal;
             Long tutorId = animalDao.findIdByIdTutor(id);
-            Optional<Animal> findAnimal = animalDao.findById(animal.getCode());
+            Optional<Animal> findAnimal = animalDao.findById(id);
             if(findAnimal.isPresent()) {
                 animal = findAnimal.get();
                 animal.setStatus(Status.INVISIBLE);
@@ -70,7 +70,7 @@ public class AnimalEndpoint {
                 animal.getVetMicrochip().setCode(vet.getCode());
                 Animal find = animalDao.findByMicrochipNumber(animal.getMicrochipNumber());
                 if(find == null){
-                     savedAnimal = animalDao.save(animal);
+                    savedAnimal = animalDao.save(animal);
                 }
                 else{
                     animal.setCode(find.getCode());

@@ -27,9 +27,9 @@ public class IncidentEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/admin/incidentes/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody Incident incident){
-        incidentDao.delete(incident);
+    @DeleteMapping(path = "/admin/incidentes/{id}")
+    public ResponseEntity<?> deleteAll(@PathVariable Long id){
+        incidentDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

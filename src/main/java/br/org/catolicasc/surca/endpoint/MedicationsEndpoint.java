@@ -31,10 +31,10 @@ public class MedicationsEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/veterinario/medicacoes/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody Medications medication){
-        animalMedicationsDao.deleteByMedicationCode(medication.getCode());
-        medicationsDao.delete(medication);
+    @DeleteMapping(path = "/veterinario/medicacoes/{id}")
+    public ResponseEntity<?> deleteAll(@PathVariable Long id){
+        animalMedicationsDao.deleteByMedicationCode(id);
+        medicationsDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

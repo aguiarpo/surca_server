@@ -36,9 +36,8 @@ public class TutorEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/veterinario/tutor/remover")
-    public ResponseEntity<?> deleteAll(@RequestBody Tutor tutor){
-            Long id = tutor.getCode();
+    @DeleteMapping(path = "/veterinario/tutor/{id}")
+    public ResponseEntity<?> deleteAll(@PathVariable Long id){
             Optional<Tutor> findTutor = tutorDao.findById(id);
             List<Animal> animals = animalDao.findByTutorCode(id);
             if(!animals.isEmpty())
@@ -57,20 +56,13 @@ public class TutorEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Vet findByCrmv(String crmv){
-        return vetDao.findByCrmv(crmv);
-    }
-
-    private void saveIncident(List<Incident>  incidents){
-        for(Incident incident : incidents){
-            if(incident.getName() != null)
-                incidentDao.save(incident);
-        }
-    }
-
     private void updateOrSave(Tutor tutor){
             Tutor find = tutorDao.findByCpf(tutor.getCpf());
             Tutor findRg = tutorDao.findByRg(tutor.getRg());
+            for(Incident incident : tutor.getIncidents()){
+                Incident findIncident = incidentDao.findByName(incident.getName());
+                incident.setCode(findIncident.getCode());
+            }
             if(find == null && findRg == null)tutorDao.save(tutor);
             else{
                 if(find != null){
