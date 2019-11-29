@@ -12,9 +12,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserRepository extends AuditableRepository<User, Long> {
-    Page<User> findByNameAndStatus(Pageable pageable, String name, Status status);
-    Page<User> findByStatus(Pageable pageable, Status status);
-    Page<User> findByNameStartingWithAndStatus(Pageable pageable, String name, Status status);
     User findByEmail(String email);
     User findByEmailAndStatus(String email, Status status);
     List<User> findByLevelsOfAccessNot(LevelsOfAccess levelsOfAccess);
