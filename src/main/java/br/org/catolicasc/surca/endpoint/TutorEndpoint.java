@@ -17,17 +17,19 @@ public class TutorEndpoint {
 
     private TutorRepository tutorDao;
     private AnimalRepository animalDao;
-    private VetRepository vetDao;
     private IncidentRepository incidentDao;
-    private AnimalMedicationsRepository animalMedicationsDao;
+    private StateRepository stateDao;
+    private CityRepository cityDao;
+    private NeighborhoodRepository neighborhoodDao;
 
     @Autowired
-    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao, VetRepository vetDao, IncidentRepository incidentDao, AnimalMedicationsRepository animalMedicationsDao) {
+    public TutorEndpoint(TutorRepository tutorDao, AnimalRepository animalDao, IncidentRepository incidentDao, StateRepository stateDao, CityRepository cityDao, NeighborhoodRepository neighborhoodDao) {
         this.tutorDao = tutorDao;
         this.animalDao = animalDao;
-        this.vetDao = vetDao;
         this.incidentDao = incidentDao;
-        this.animalMedicationsDao = animalMedicationsDao;
+        this.stateDao = stateDao;
+        this.cityDao = cityDao;
+        this.neighborhoodDao = neighborhoodDao;
     }
 
     @PostMapping(path = "/veterinario/tutor")
@@ -57,11 +59,13 @@ public class TutorEndpoint {
     }
 
     private void updateOrSave(Tutor tutor){
+            Neighborhood neighborhood = saveAddress(tutor);
+            tutor.setNeighborhood(neighborhood);
             Tutor find = tutorDao.findByCpf(tutor.getCpf());
             Tutor findRg = tutorDao.findByRg(tutor.getRg());
             for(Incident incident : tutor.getIncidents()){
                 Incident findIncident = incidentDao.findByName(incident.getName());
-                incident.setCode(findIncident.getCode());
+                if(findIncident != null) incident.setCode(findIncident.getCode());
             }
             if(find == null && findRg == null)tutorDao.save(tutor);
             else{
@@ -73,5 +77,40 @@ public class TutorEndpoint {
                     tutorDao.save(tutor);
                 }
             }
+    }
+
+    private Neighborhood saveAddress(Tutor tutor){
+        State stateTutor = tutor.getNeighborhood().getCity().getState();
+        City cityTutor = tutor.getNeighborhood().getCity();
+        Neighborhood neighborhoodTutor = tutor.getNeighborhood();
+        State state = stateDao.findByName(stateTutor.getName());
+        if(state == null){
+            State saveState = stateDao.save(stateTutor);
+            cityTutor.getState().setCode(saveState.getCode());
+            City saveCity = cityDao.save(cityTutor);
+            neighborhoodTutor.getCity().setCode(saveCity.getCode());
+            return neighborhoodDao.save(neighborhoodTutor);
+        }else{
+            City city = cityDao.findByNameAndStateName(cityTutor.getName(), stateTutor.getName());
+            if(city == null){
+                cityTutor.getState().setCode(state.getCode());
+                City saveCity = cityDao.save(cityTutor);
+                neighborhoodTutor.getCity().setCode(saveCity.getCode());
+                return neighborhoodDao.save(neighborhoodTutor);
+            } else {
+                Neighborhood neighborhood = neighborhoodDao
+                        .findByNameAndCity_NameAndCity_State_Name(
+                                neighborhoodTutor.getName(),
+                                cityTutor.getName(),
+                                stateTutor.getName()
+                        );
+                if(neighborhood == null){
+                    neighborhoodTutor.getCity().setCode(city.getCode());
+                    return neighborhoodDao.save(neighborhoodTutor);
+                }else{
+                    return neighborhood;
+                }
+            }
+        }
     }
 }

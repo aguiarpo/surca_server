@@ -49,6 +49,11 @@ public class Animal extends Auditable{
     private LocalDate dateMicrochip;
     @Column(columnDefinition = "TEXT")
     private String comments;
+    @NotEmpty
+    private String genre;
+
+    @NotNull
+    private boolean castrated;
 
     @ManyToOne
     private Tutor tutor;

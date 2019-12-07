@@ -19,8 +19,6 @@ import java.util.List;
         initialValue = 2, allocationSize = 1)
 @Table(indexes = {@Index(name = "index_name", columnList="name"),
         @Index(name = "index_mother_name", columnList="motherName"),
-        @Index(name = "index_city", columnList="city"),
-        @Index(name = "index_state", columnList="state"),
         @Index(name = "index_created_by", columnList="createdBy"),
         @Index(name = "index_last_modified_by", columnList="lastModifiedBy")},
         uniqueConstraints = {@UniqueConstraint(name = "cpf", columnNames=  "cpf" ), @UniqueConstraint(name = "rg", columnNames = "rg")})
@@ -40,17 +38,12 @@ public class Tutor extends Auditable{
     private String motherName;
     @NotEmpty
     private String name;
+    @ManyToOne
+    private Neighborhood neighborhood;
     @NotEmpty
     private String street;
     private Short number;
-    @NotEmpty
-    private String neighborhood;
     private String complement;
-    @NotEmpty
-    private String city;
-    @Size(min = 2, max = 2)
-    @NotEmpty
-    private String state;
     @NotEmpty
     @Size(max = 9)
     private String cep;

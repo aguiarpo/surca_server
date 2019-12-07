@@ -7,6 +7,7 @@ import br.org.catolicasc.surca.repository.UserRepository;
 import br.org.catolicasc.surca.repository.VetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
 
 @RestController
 @RequestMapping("v1")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserEndpoint{
 
     private UserRepository userDao;
@@ -36,6 +38,52 @@ public class UserEndpoint{
         this.userDao = userDao;
         this.vetDao = vetDao;
         this.mailer = mailer;
+    }
+
+    @GetMapping(path = "/admin/usuario/{column}/{value}")
+    public  ResponseEntity<?> findAllPage(@PathVariable String column,
+                                          @PathVariable String value, Pageable pageable){
+        if(value.equals("empty")) value = "";
+        switch (column){
+            case "name":
+                return new ResponseEntity<>
+                        (userDao.findByNameStartingWithAndStatus(value, Status.VISIBLE, pageable), HttpStatus.OK);
+            case "email":
+                return new ResponseEntity<>
+                        (userDao.findByEmailStartingWithAndStatus(value, Status.VISIBLE, pageable), HttpStatus.OK);
+            case "removed":
+                return new ResponseEntity<>
+                        (userDao.findByEmailStartingWithAndStatus(value, Status.INVISIBLE, pageable), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/like/{column}/{value}")
+    public  ResponseEntity<?> suggestionName(@PathVariable String value, @PathVariable String column){
+        Pageable topTen = PageRequest.of(0,5);
+        switch (column){
+            case "name":
+                return new ResponseEntity<>
+                        (userDao.findByNameStartingWithAndStatusGroupByName(value, topTen), HttpStatus.OK);
+            case "email":
+                return new ResponseEntity<>
+                        (userDao.findByEmailStartingWithAndStatusGroupByEmail(value, "VISIBLE", topTen), HttpStatus.OK);
+            case "removed":
+                return new ResponseEntity<>
+                        (userDao.findByEmailStartingWithAndStatusGroupByEmail(value, "INVISIBLE", topTen), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/usuario/{id}")
+    public  ResponseEntity<?> getId(@PathVariable Long id){
+        Optional<User> user = userDao.findById(id);
+        user.get().setPassword(null);
+        Vet vet;
+        vet = vetDao.findByUserCode(id);
+        if(vet == null) vet = new Vet();
+        vet.setUser(user.get());
+        return new ResponseEntity<>(vet, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/usuario")
@@ -105,6 +153,7 @@ public class UserEndpoint{
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @DeleteMapping(path = "/admin/usuario/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Vet vet = vetDao.findByUserCode(id);
@@ -114,6 +163,16 @@ public class UserEndpoint{
         else{
             vet.getUser().setStatus(Status.INVISIBLE);
             userDao.save(vet.getUser());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/admin/usuario/visible/{id}")
+    public ResponseEntity<?> visible(@PathVariable Long id){
+        Optional<User> user = userDao.findById(id);
+        if(user.isPresent()){
+            user.get().setStatus(Status.VISIBLE);
+            userDao.save(user.get());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -162,7 +221,6 @@ public class UserEndpoint{
             if (findUser.get().getLevelsOfAccess() == LevelsOfAccess.VETERINARIO) {
                 Vet findVet = vetDao.findByUserCode(findUser.get().getCode());
                 vet.setCode(findVet.getCode());
-                vet.getUser().setLevelsOfAccess(LevelsOfAccess.VETERINARIO);
                 return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
             } else{
                 return new ResponseEntity<>(userDao.save(vet.getUser()), HttpStatus.OK);

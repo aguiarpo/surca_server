@@ -25,20 +25,20 @@ public class MedicationsEndpoint {
         this.animalMedicationsDao = animalMedicationsDao;
     }
 
-    @PostMapping(path = "/veterinario/medicacoes")
+    @PostMapping(path = "/admin/medicacoes")
     public ResponseEntity<?> save(@RequestBody Medications medication){
         updateOrSave(medication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/veterinario/medicacoes/{id}")
+    @DeleteMapping(path = "/admin/medicacoes/{id}")
     public ResponseEntity<?> deleteAll(@PathVariable Long id){
         animalMedicationsDao.deleteByMedicationCode(id);
         medicationsDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(path = "/veterinario/medicacoes")
+    @PutMapping(path = "/admin/medicacoes")
     public ResponseEntity<?> update(@RequestBody Medications medication){
         updateOrSave(medication);
         return new ResponseEntity<>(HttpStatus.OK);

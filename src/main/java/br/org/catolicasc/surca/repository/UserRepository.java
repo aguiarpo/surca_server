@@ -14,6 +14,14 @@ import java.util.List;
 public interface UserRepository extends AuditableRepository<User, Long> {
     User findByEmail(String email);
     User findByEmailAndStatus(String email, Status status);
+    @Query(value = "SELECT * FROM `user` where `name` like :name% AND `status` = 'VISIBLE' group by `name`",
+    nativeQuery = true)
+    Page<User> findByNameStartingWithAndStatusGroupByName(String name, Pageable pageable);
+    @Query(value = "SELECT * FROM `user` where `email` like :email% AND `status` = :status group by `email`",
+            nativeQuery = true)
+    Page<User> findByEmailStartingWithAndStatusGroupByEmail(String email, String status, Pageable pageable);
+    Page<User> findByNameStartingWithAndStatus(String name, Status status, Pageable pageable);
+    Page<User> findByEmailStartingWithAndStatus(String email, Status status, Pageable pageable);
     List<User> findByLevelsOfAccessNot(LevelsOfAccess levelsOfAccess);
     @Query(value = "delete from `user` where email = ?1 and `password` = ?2", nativeQuery = true)
     @Modifying
