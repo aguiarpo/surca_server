@@ -21,12 +21,14 @@ public class AnimalEndpoint {
     private VetRepository vetDao;
     private AnimalMedicationsRepository animalMedicationsDao;
     private MedicationsRepository medicationsDao;
+    private NeighborhoodRepository neighborhoodDao;
 
     @Autowired
-    public AnimalEndpoint(AnimalRepository animalDao,MedicationsRepository medicationsDao, TutorRepository tutorDao, VetRepository vetDao, AnimalMedicationsRepository animalMedicationsDao) {
+    public AnimalEndpoint(NeighborhoodRepository neighborhoodDao, AnimalRepository animalDao,MedicationsRepository medicationsDao, TutorRepository tutorDao, VetRepository vetDao, AnimalMedicationsRepository animalMedicationsDao) {
         this.animalDao = animalDao;
         this.tutorDao = tutorDao;
         this.vetDao = vetDao;
+        this.neighborhoodDao = neighborhoodDao;
         this.animalMedicationsDao = animalMedicationsDao;
         this.medicationsDao = medicationsDao;
     }
@@ -47,6 +49,27 @@ public class AnimalEndpoint {
                 }
             }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/animal/report/{neighborhood}")
+    public ResponseEntity<?> getNeighborhood(@PathVariable String neighborhood){
+
+        return new ResponseEntity<>(animalDao.findByNeighborhood(neighborhood),
+                HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/animal/{neighborhood}")
+    public ResponseEntity<?> getNeighborhoodLike(@PathVariable String neighborhood, Pageable pageable){
+
+        return new ResponseEntity<>(neighborhoodDao.findByNameLike(neighborhood, pageable),
+                HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/admin/animal/report")
+    public ResponseEntity<?> getAllNeighborhood(){
+
+        return new ResponseEntity<>(animalDao.findByAllNeighborhood(),
+                HttpStatus.OK);
     }
 
     @PostMapping(path = "/veterinario/animal")

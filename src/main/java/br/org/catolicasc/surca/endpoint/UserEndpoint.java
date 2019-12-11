@@ -111,31 +111,21 @@ public class UserEndpoint{
 
     @PostMapping(path = "/admin/usuario")
     public ResponseEntity<?> save(@RequestBody Vet vet){
-        Vet findVet = null;
         User user = vet.getUser();
         String password = getPassword();
-        if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO) && vet.getCrmv() != null){
-            findVet = vetDao.findByCrmv(vet.getCrmv());
-            if(findVet != null){
-                vet.setCode(findVet.getCode());
-                vet.getUser().setStatus(Status.VISIBLE);
-                vet.getUser().setPassword(findVet.getUser().getPassword());
-                vet.getUser().setCode(findVet.getUser().getCode());
-            }else{
-                vet.getUser().setPassword(password);
-                vet.getUser().setBcryptPassword();
-            }
+        if(user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
+            vet.getUser().setStatus(Status.VISIBLE);
+            vet.getUser().setPassword(password);
+            vet.getUser().setBcryptPassword();
             vetDao.save(vet);
         }else if(!user.getLevelsOfAccess().equals(LevelsOfAccess.VETERINARIO)){
             user.setPassword(password);
             user.setBcryptPassword();
             userDao.save(user);
         }
-        if(findVet == null){
-            ArrayList<String> recipients = new ArrayList<>();
-            recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
-            sendEmail(recipients, password);
-        }
+        ArrayList<String> recipients = new ArrayList<>();
+        recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
+        sendEmail(recipients, password);
         return new ResponseEntity<>(vet, HttpStatus.OK);
     }
 
@@ -218,7 +208,8 @@ public class UserEndpoint{
                 vet.getUser().setPassword(findUser.get().getPassword());
             else
                 vet.getUser().setBcryptPassword();
-            if (findUser.get().getLevelsOfAccess() == LevelsOfAccess.VETERINARIO) {
+            if (findUser.get().getLevelsOfAccess() == LevelsOfAccess.VETERINARIO ||
+                    vet.getUser().getLevelsOfAccess() == LevelsOfAccess.VETERINARIO) {
                 Vet findVet = vetDao.findByUserCode(findUser.get().getCode());
                 vet.setCode(findVet.getCode());
                 return new ResponseEntity<>(vetDao.save(vet), HttpStatus.OK);
