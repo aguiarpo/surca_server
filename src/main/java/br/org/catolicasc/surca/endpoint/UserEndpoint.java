@@ -26,7 +26,6 @@ import static br.org.catolicasc.surca.endpoint.GeneratePassword.getPassword;
 
 @RestController
 @RequestMapping("v1")
-@CrossOrigin(origins = "http://localhost:4200")
 public class UserEndpoint{
 
     private UserRepository userDao;
@@ -124,7 +123,7 @@ public class UserEndpoint{
             userDao.save(user);
         }
         ArrayList<String> recipients = new ArrayList<>();
-        recipients.add("Eduardo Poerner <eduardo.poerner@catolicasc.org.br>");
+        recipients.add(user.getEmail());
         sendEmail(recipients, password);
         return new ResponseEntity<>(vet, HttpStatus.OK);
     }
@@ -163,6 +162,35 @@ public class UserEndpoint{
         if(user.isPresent()){
             user.get().setStatus(Status.VISIBLE);
             userDao.save(user.get());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "create/admin")
+    public ResponseEntity<?> createAdmin(){
+        List<User> users = userDao.findByLevelsOfAccess(LevelsOfAccess.ADMIN);
+        if(users.isEmpty()){
+            String password = getPassword();
+            User user = new User();
+            user.setName("Marister Camara");
+            user.setStatus(Status.VISIBLE);
+            user.setLevelsOfAccess(LevelsOfAccess.ADMIN);
+            user.setEmail("marister.canto@guaramirim.sc.gov.br");
+            user.setCity("Guaramirim");
+            user.setState("SC");
+            user.setTelephone1("(47) 99192-1720");
+            user.setPassword(password);
+            user.setBcryptPassword();
+            Vet vet = new Vet();
+            vet.setUser(user);
+            vet.setCrmv("2208");
+            Vet savedUser = vetDao.save(vet);
+            if(savedUser != null){
+                ArrayList<String> recipients = new ArrayList<>();
+                recipients.add(user.getEmail());
+                sendEmail(recipients, password);
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -222,7 +250,7 @@ public class UserEndpoint{
 
     private void sendEmail(ArrayList<String> recipients, String body){
         try{
-            mailer.submit(new EmailMessage("Eduardo Aguiar <emailtestesurca@gmail.com>",
+            mailer.submit(new EmailMessage("Suporte <suporte.animais.guaramirim@gmail.com>",
                     recipients, "Senha", "Senha -> " + body));
         }catch (MailException ignored){
 

@@ -14,7 +14,7 @@ import java.util.Properties;
 @Configuration
 @Service
 @PropertySource("classpath:/mail.properties")
-public class EmailConfig {
+public class EmailConfig { // Classe que configura o email
 
     private final Environment env;
 

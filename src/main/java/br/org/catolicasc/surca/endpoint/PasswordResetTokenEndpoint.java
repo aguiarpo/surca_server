@@ -124,12 +124,8 @@ public class PasswordResetTokenEndpoint {
     }
 
     private void sendEmail(ArrayList<String> recipients, String body){
-        try{
-            mailer.submit(new EmailMessage("Eduardo Aguiar <emailtestesurca@gmail.com>",
-                    recipients, "Recuperar Senha", "Token -> " + body));
-        }catch (MailException ignored){
-
-        }
+        mailer.submit(new EmailMessage("Suporte <suporte.animais.guaramirim@gmail.com>",
+                    recipients, "Recuperar Senha", "Código -> " + body));
     }
 
     private void createPasswordResetTokenForUser(User user, String token) {

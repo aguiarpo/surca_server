@@ -2,7 +2,7 @@ package br.org.catolicasc.surca.email;
 
 import java.util.List;
 
-public class EmailMessage {
+public class EmailMessage { // Corpo do Email
     private String sender;
     private List<String> recipients;
     private String subject;

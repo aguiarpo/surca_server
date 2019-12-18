@@ -22,7 +22,7 @@ public interface UserRepository extends AuditableRepository<User, Long> {
     Page<User> findByEmailStartingWithAndStatusGroupByEmail(String email, String status, Pageable pageable);
     Page<User> findByNameStartingWithAndStatus(String name, Status status, Pageable pageable);
     Page<User> findByEmailStartingWithAndStatus(String email, Status status, Pageable pageable);
-    List<User> findByLevelsOfAccessNot(LevelsOfAccess levelsOfAccess);
+    List<User> findByLevelsOfAccess(LevelsOfAccess levelsOfAccess);
     @Query(value = "delete from `user` where email = ?1 and `password` = ?2", nativeQuery = true)
     @Modifying
     @Transactional
